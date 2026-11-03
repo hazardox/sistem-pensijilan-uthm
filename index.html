@@ -1,0 +1,2693 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modul Pemantauan Pensijilan Profesional & Kompetensi Pelajar - SMP UTHM</title>
+  <link rel="icon" type="image/png" href="Official-Logo-UTHM-2026 favicon.png">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            uthm: {
+              navy: '#002B7F',
+              darknavy: '#001A4D',
+              deep: '#06163A',
+              lightnavy: '#0F44A8',
+              accent: '#E31B23',
+              gold: '#D97706',
+              bglight: '#F8FAFC',
+              border: '#E2E8F0',
+            }
+          },
+          boxShadow: {
+            'soft': '0 4px 20px -2px rgba(0, 43, 127, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04)',
+            'card': '0 10px 25px -3px rgba(0, 43, 127, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.03)',
+            'hover': '0 20px 25px -5px rgba(0, 43, 127, 0.12), 0 10px 10px -5px rgba(0, 43, 127, 0.04)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    
+    .view-transition {
+      transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
+    }
+    
+    .view-hidden {
+      display: none !important;
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    
+    .view-visible {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Print styles */
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background: white !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-[#F4F6F9] text-slate-800 antialiased min-h-screen flex flex-col font-sans selection:bg-uthm-navy selection:text-white">
+
+  <!-- ========================================== -->
+  <!-- TOP UTILITY / SYSTEM BAR                   -->
+  <!-- ========================================== -->
+  <header class="bg-uthm-deep text-white text-xs border-b border-blue-900/40 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap justify-between items-center gap-2">
+      <div class="flex items-center space-x-3">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-200 border border-blue-400/20 font-medium">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Sistem Maklumat Pelajar (SMP) V2.6
+        </span>
+        <span class="hidden md:inline text-slate-400">|</span>
+        <span class="hidden md:inline text-slate-300 font-medium">Universiti Tun Hussein Onn Malaysia</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <div id="liveClock" class="font-mono text-slate-300 hidden sm:block"></div>
+        <div class="flex items-center gap-2 pl-3 border-l border-blue-900">
+          <span class="text-slate-300">Bantuan & Sokongan:</span>
+          <span class="text-amber-300 font-semibold hover:underline cursor-pointer">smp@uthm.edu.my</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- MAIN SYSTEM HEADER & ROLE CONTROLS         -->
+  <!-- ========================================== -->
+  <nav class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-40 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between py-3 gap-4">
+        
+        <!-- Logo & Module Title -->
+        <div class="flex items-center gap-4">
+          <div class="flex-shrink-0 flex items-center">
+            <img 
+              src="Official-Logo-UTHM-2026.png" 
+              alt="UTHM Logo" 
+              class="h-12 sm:h-14 w-auto object-contain"
+              onerror="this.onerror=null; this.src='Official-Logo-UTHM-2026 favicon.png'; this.classList.add('h-12');"
+            />
+          </div>
+          <div class="border-l border-slate-200 pl-4">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider rounded bg-blue-100 text-uthm-navy border border-blue-200">
+                Sub-Modul SMP
+              </span>
+              <span class="text-[11px] text-slate-500 font-medium hidden sm:inline">Pengurusan Pensijilan Pelajar</span>
+            </div>
+            <h1 class="text-base sm:text-lg font-extrabold text-uthm-darknavy tracking-tight mt-0.5 leading-snug">
+              Modul Pemantauan Pensijilan Profesional & Kompetensi Pelajar - SMP
+            </h1>
+          </div>
+        </div>
+
+        <!-- Role-Switcher Navigation & Simulation Badge -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <!-- Role Switcher Tabs -->
+          <div class="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200/80 shadow-inner">
+            <!-- Pelajar Button -->
+            <button 
+              onclick="switchRole('pelajar')" 
+              id="role-tab-pelajar"
+              class="role-tab-btn flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 shadow-sm bg-white text-uthm-navy border border-slate-200"
+            >
+              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+              </svg>
+              <span>Pelajar</span>
+            </button>
+
+            <!-- Penyelaras Fakulti Button -->
+            <button 
+              onclick="switchRole('penyelaras')" 
+              id="role-tab-penyelaras"
+              class="role-tab-btn flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all duration-200"
+            >
+              <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span>Penyelaras Fakulti</span>
+              <span id="pendingBadgeCount" class="ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500 text-white">3</span>
+            </button>
+
+            <!-- Pengurusan Button -->
+            <button 
+              onclick="switchRole('pengurusan')" 
+              id="role-tab-pengurusan"
+              class="role-tab-btn flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all duration-200"
+            >
+              <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+              <span>Pengurusan</span>
+            </button>
+          </div>
+
+          <!-- User Role Indicator Badge -->
+          <div class="hidden lg:flex items-center gap-2 pl-3 border-l border-slate-200 text-xs">
+            <div id="simulatedUserAvatar" class="w-8 h-8 rounded-full bg-blue-100 border border-blue-200 text-uthm-navy flex items-center justify-center font-bold text-xs shadow-sm">
+              MH
+            </div>
+            <div>
+              <p id="simulatedUserName" class="font-bold text-slate-800 leading-tight">M. Harith bin Aziz</p>
+              <p id="simulatedUserRole" class="text-[11px] text-slate-500 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Pelajar (FSKTM)
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========================================== -->
+  <!-- MAIN APP CONTAINER                         -->
+  <!-- ========================================== -->
+  <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- System Context Banner -->
+    <div id="roleAlertBanner" class="mb-6 p-4 rounded-xl border flex items-center justify-between text-xs sm:text-sm bg-blue-50/70 border-blue-200 text-blue-900 shadow-sm transition-all duration-300">
+      <div class="flex items-center gap-3">
+        <div class="p-2 rounded-lg bg-blue-100 text-uthm-navy">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div>
+          <span class="font-bold uppercase tracking-wider text-[11px] px-1.5 py-0.5 rounded bg-blue-200/80 mr-1.5" id="bannerRoleTag">Mod Pelajar</span>
+          <span id="bannerRoleDesc">Anda sedang melihat portal pendaftaran pensijilan pelajar dengan integrasi terus rekod SMP UTHM.</span>
+        </div>
+      </div>
+      <button onclick="document.getElementById('roleAlertBanner').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 p-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 1: PELAJAR (STUDENT DASHBOARD & REGISTRATION FORM)  -->
+    <!-- ======================================================== -->
+    <section id="view-pelajar" class="view-transition view-visible space-y-6">
+
+      <!-- SMP Integrated Read-Only Student Information Card -->
+      <div class="bg-gradient-to-r from-uthm-darknavy via-uthm-navy to-blue-900 rounded-2xl shadow-card p-6 text-white relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
+          <img src="Official-Logo-UTHM-2026 favicon.png" class="w-72 h-72 object-contain" alt="crest">
+        </div>
+
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div class="flex items-start sm:items-center gap-4">
+            <div class="relative">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white text-2xl font-bold shadow-inner">
+                <span>MH</span>
+              </div>
+              <span class="absolute -bottom-1 -right-1 px-2 py-0.5 bg-emerald-500 text-white text-[10px] font-bold rounded-full border-2 border-uthm-navy flex items-center gap-1 shadow">
+                <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
+                AKTIF
+              </span>
+            </div>
+
+            <div>
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-blue-400/20 text-blue-200 border border-blue-300/30">
+                  Data Terintegrasi SMP
+                </span>
+                <span class="text-xs text-blue-200">Sesi 2025/2026 (Semester 6)</span>
+              </div>
+              <h2 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
+                MUHAMMAD HARITH BIN AZIZ
+              </h2>
+              <div class="mt-1 flex flex-wrap items-center gap-y-1 gap-x-4 text-xs sm:text-sm text-blue-100">
+                <span class="flex items-center gap-1.5 font-medium">
+                  <span class="text-blue-300">No. Matrik:</span>
+                  <code class="bg-black/20 px-2 py-0.5 rounded text-amber-300 font-mono font-bold tracking-wide">AI210045</code>
+                </span>
+                <span>&bull;</span>
+                <span class="flex items-center gap-1.5">
+                  <span class="text-blue-300">No. KP:</span>
+                  <span>020415-01-0887</span>
+                </span>
+              </div>
+              <p class="text-xs sm:text-sm text-blue-200/90 mt-1.5 font-normal">
+                <span class="font-semibold text-white">Fakulti & Program:</span> Fakulti Sains Komputer dan Teknologi Maklumat (FSKTM) &mdash; Sarjana Muda Sains Komputer (Keselamatan Maklumat) dengan Kepujian
+              </p>
+            </div>
+          </div>
+
+          <!-- Student Entitlement & Quick Stats -->
+          <div class="flex flex-wrap sm:flex-nowrap gap-3 bg-white/10 backdrop-blur-md p-3.5 rounded-xl border border-white/15">
+            <div class="px-3 py-1">
+              <p class="text-[11px] uppercase tracking-wider text-blue-200 font-semibold">Dana Yuran Pensijilan Pelajar</p>
+              <p class="text-xl sm:text-2xl font-black text-amber-300">RM 500.00</p>
+              <p class="text-[10px] text-blue-200">Kadar Subsidi Maksimum Bendahari</p>
+            </div>
+            <div class="border-l border-white/20 pl-3 pr-2 py-1">
+              <p class="text-[11px] uppercase tracking-wider text-blue-200 font-semibold">Status Permohonan</p>
+              <div class="flex items-center gap-2 mt-1">
+                <span id="studentStatsTotal" class="text-sm font-bold bg-white/20 px-2 py-0.5 rounded">2 Rekod</span>
+                <span id="studentStatsVerified" class="text-xs text-emerald-300 font-medium">&bull; 1 Disahkan</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Form Section -->
+      <div class="bg-white rounded-2xl shadow-soft border border-slate-200 overflow-hidden">
+        <!-- Form Header -->
+        <div class="border-b border-slate-200 px-6 py-4 bg-slate-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+              <span class="w-7 h-7 rounded-lg bg-blue-100 text-uthm-navy flex items-center justify-center font-black text-sm">1</span>
+              Borang Pendaftaran & Kemaskini Pensijilan Profesional / Kompetensi
+            </h3>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Isi maklumat mengikut Kamus Data Sistem. Rekod yang dihantar akan disemak oleh Penyelaras Fakulti.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-slate-600">
+            <span class="inline-block w-2 h-2 rounded-full bg-uthm-accent"></span>
+            <span>Medan bertanda <span class="text-uthm-accent font-bold">*</span> adalah wajib</span>
+          </div>
+        </div>
+
+        <!-- Form Body -->
+        <form id="certificationForm" onsubmit="handleFormSubmit(event)" class="p-6 sm:p-8 space-y-8">
+          
+          <!-- Section A: Maklumat Pensijilan -->
+          <div>
+            <div class="flex items-center gap-2 mb-4 pb-2 border-b border-slate-100">
+              <span class="text-xs font-bold uppercase tracking-wider text-uthm-navy bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100">
+                A. Maklumat Pensijilan (Katalog Rujukan)
+              </span>
+              <span class="text-xs text-slate-400 font-normal">Katalog pengiktirafan dan jenis kelayakan</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <!-- Kategori / Jenis Kursus -->
+              <div>
+                <label for="kategoriKursus" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Kategori Kursus <span class="text-uthm-accent">*</span>
+                </label>
+                <div class="relative">
+                  <select 
+                    id="kategoriKursus" 
+                    name="kategoriKursus" 
+                    required 
+                    class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-uthm-navy focus:border-uthm-navy block p-2.5 transition"
+                  >
+                    <option value="" disabled selected>-- Sila Pilih Kategori --</option>
+                    <option value="Profesional">Profesional (Badan Pengiktiraf Antarabangsa/Industri)</option>
+                    <option value="Kompetensi">Kompetensi (Kemahiran Khusus & Kebolehpasaran)</option>
+                  </select>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-1">Pilih kategori sijil mengikut piawaian UTHM</p>
+              </div>
+
+              <!-- Nama Kursus / Sijil -->
+              <div>
+                <label for="namaKursus" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Nama Penuh Kursus / Sijil <span class="text-uthm-accent">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="namaKursus" 
+                  name="namaKursus" 
+                  required 
+                  placeholder="Cth: Certified Ethical Hacker (CEH) v12"
+                  list="suggestedCourses"
+                  class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-uthm-navy focus:border-uthm-navy block p-2.5 transition"
+                >
+                <datalist id="suggestedCourses">
+                  <option value="Certified Ethical Hacker (CEH) v12">
+                  <option value="AWS Certified Solutions Architect - Associate">
+                  <option value="Cisco Certified Network Associate (CCNA 200-301)">
+                  <option value="CIDB Green Card Safety Induction">
+                  <option value="NIOSH Safety and Health Officer (SHO)">
+                  <option value="Certified Data Analyst Associate">
+                  <option value="Autodesk Revit Architecture Certified Professional">
+                  <option value="Project Management Professional (PMP)">
+                </datalist>
+                <p class="text-[11px] text-slate-500 mt-1">Nama rasmi persijilan yang dipohon atau diperoleh</p>
+              </div>
+
+              <!-- Badan Pengiktiraf / Pengeluar Sijil -->
+              <div>
+                <label for="badanPengiktiraf" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Badan Pengiktiraf / Pengeluar <span class="text-uthm-accent">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="badanPengiktiraf" 
+                  name="badanPengiktiraf" 
+                  required 
+                  placeholder="Cth: EC-Council, Cisco, NIOSH, CIDB"
+                  class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-uthm-navy focus:border-uthm-navy block p-2.5 transition"
+                >
+                <p class="text-[11px] text-slate-500 mt-1">Nama institusi atau organisasi pensijilan</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section B: Pelaksanaan (Maklumat Transaksi) -->
+          <div>
+            <div class="flex items-center gap-2 mb-4 pb-2 border-b border-slate-100">
+              <span class="text-xs font-bold uppercase tracking-wider text-uthm-navy bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100">
+                B. Pelaksanaan (Maklumat Transaksi)
+              </span>
+              <span class="text-xs text-slate-400 font-normal">Tarikh kursus dan mod pembelajaran</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <!-- Tarikh Mula Kursus -->
+              <div>
+                <label for="tarikhMula" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Tarikh Mula Kursus <span class="text-uthm-accent">*</span>
+                </label>
+                <input 
+                  type="date" 
+                  id="tarikhMula" 
+                  name="tarikhMula" 
+                  required 
+                  class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-uthm-navy focus:border-uthm-navy block p-2.5 transition"
+                >
+              </div>
+
+              <!-- Tarikh Tamat Kursus -->
+              <div>
+                <label for="tarikhTamat" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Tarikh Tamat Kursus <span class="text-uthm-accent">*</span>
+                </label>
+                <input 
+                  type="date" 
+                  id="tarikhTamat" 
+                  name="tarikhTamat" 
+                  required 
+                  class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-uthm-navy focus:border-uthm-navy block p-2.5 transition"
+                >
+              </div>
+
+              <!-- Status Semasa -->
+              <div>
+                <label for="statusSemasa" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Status Semasa <span class="text-uthm-accent">*</span>
+                </label>
+                <select 
+                  id="statusSemasa" 
+                  name="statusSemasa" 
+                  required 
+                  onchange="handleStatusChange(this.value)"
+                  class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-uthm-navy focus:border-uthm-navy block p-2.5 transition font-medium"
+                >
+                  <option value="" disabled selected>-- Pilih Status --</option>
+                  <option value="Mendaftar">Mendaftar</option>
+                  <option value="Sedang Berlangsung">Sedang Berlangsung</option>
+                  <option value="Selesai">Selesai (Tamat & Lulus)</option>
+                  <option value="Tangguh">Tangguh</option>
+                  <option value="Batal">Batal</option>
+                </select>
+              </div>
+
+              <!-- Mod Pelaksanaan -->
+              <div>
+                <label for="modPelaksanaan" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Mod Pelaksanaan <span class="text-uthm-accent">*</span>
+                </label>
+                <select 
+                  id="modPelaksanaan" 
+                  name="modPelaksanaan" 
+                  required 
+                  class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-uthm-navy focus:border-uthm-navy block p-2.5 transition"
+                >
+                  <option value="" disabled selected>-- Pilih Mod --</option>
+                  <option value="Bersemuka">Bersemuka (Physical Classroom)</option>
+                  <option value="Atas Talian">Atas Talian (Online / E-Learning)</option>
+                  <option value="Hibrid">Hibrid (Blended Learning)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section C: Pencapaian & Bukti Dokumen -->
+          <div>
+            <div class="flex items-center gap-2 mb-4 pb-2 border-b border-slate-100">
+              <span class="text-xs font-bold uppercase tracking-wider text-uthm-navy bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100">
+                C. Pencapaian & Bukti Dokumen
+              </span>
+              <span class="text-xs text-slate-400 font-normal">Diisi selepas tamat atau semasa pendaftaran</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <!-- Keputusan / Gred -->
+              <div>
+                <label for="keputusanGred" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Keputusan / Gred <span class="text-uthm-accent">*</span>
+                </label>
+                <select 
+                  id="keputusanGred" 
+                  name="keputusanGred" 
+                  required 
+                  class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-uthm-navy focus:border-uthm-navy block p-2.5 transition"
+                >
+                  <option value="Lulus" selected>Lulus (Passed)</option>
+                  <option value="Cemerlang">Lulus dengan Cemerlang (Distinction)</option>
+                  <option value="Gagal">Gagal (Failed)</option>
+                  <option value="Dalam Latihan">Sedang Berlangsung / Belum Dinilai</option>
+                </select>
+                <p class="text-[11px] text-slate-500 mt-1">Status pencapaian penilaian pensijilan</p>
+              </div>
+
+              <!-- No. Siri Sijil -->
+              <div>
+                <label for="noSiriSijil" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  No. Siri Sijil <span class="text-slate-400 font-normal">(jika ada)</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="noSiriSijil" 
+                  name="noSiriSijil" 
+                  placeholder="Cth: CERT-2026-99824X"
+                  class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-uthm-navy focus:border-uthm-navy block p-2.5 transition"
+                >
+                <p class="text-[11px] text-slate-500 mt-1">Nombor rujukan pengesahan oleh pengeluar sijil</p>
+              </div>
+
+              <!-- Tarikh Luput Sijil -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <label for="tarikhLuput" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    Tarikh Luput Sijil
+                  </label>
+                  <label class="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      id="seumurHidupCheck" 
+                      onchange="toggleSeumurHidup(this.checked)"
+                      class="rounded border-slate-300 text-uthm-navy focus:ring-uthm-navy"
+                    >
+                    <span>Sah Seumur Hidup</span>
+                  </label>
+                </div>
+                <input 
+                  type="date" 
+                  id="tarikhLuput" 
+                  name="tarikhLuput" 
+                  class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-uthm-navy focus:border-uthm-navy block p-2.5 transition"
+                >
+                <p id="tarikhLuputHint" class="text-[11px] text-slate-500 mt-1">Boleh dikosongkan jika tiada tarikh luput</p>
+              </div>
+            </div>
+
+            <!-- Bukti Dokumen Upload Input -->
+            <div class="mt-6">
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                Bukti Dokumen (Sijil / Transkrip / Surat Tawaran) <span class="text-uthm-accent">*</span>
+              </label>
+              
+              <div 
+                id="dropZone" 
+                class="border-2 border-dashed border-slate-300 hover:border-uthm-navy rounded-2xl p-6 text-center bg-slate-50/50 hover:bg-blue-50/20 transition-all cursor-pointer group"
+                onclick="document.getElementById('buktiDokumen').click()"
+              >
+                <input 
+                  type="file" 
+                  id="buktiDokumen" 
+                  name="buktiDokumen" 
+                  accept=".pdf,.jpg,.jpeg,.png" 
+                  class="hidden" 
+                  onchange="handleFileUpload(this)"
+                >
+                <div class="flex flex-col items-center justify-center space-y-2">
+                  <div class="w-12 h-12 rounded-full bg-blue-100 group-hover:bg-blue-200 text-uthm-navy flex items-center justify-center transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                    </svg>
+                  </div>
+                  <div class="text-sm font-semibold text-slate-700">
+                    <span class="text-uthm-navy underline">Klik untuk muat naik</span> atau seret & lepas fail ke sini
+                  </div>
+                  <p class="text-xs text-slate-500">
+                    Format disokong: <strong>PDF, JPG, PNG</strong> (Saiz Maksimum: <span class="text-uthm-accent font-semibold">2MB</span>)
+                  </p>
+                </div>
+              </div>
+
+              <!-- Uploaded File Badge Preview -->
+              <div id="fileUploadPreview" class="hidden mt-3 p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="p-2 bg-blue-200 rounded-lg text-uthm-navy">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p id="fileNameDisplay" class="text-xs font-bold text-slate-800">sijil_ceh_harith.pdf</p>
+                    <p id="fileSizeDisplay" class="text-[11px] text-slate-500">1.24 MB &bull; Sedia untuk dimuat naik</p>
+                  </div>
+                </div>
+                <button 
+                  type="button" 
+                  onclick="removeUploadedFile()" 
+                  class="text-xs text-rose-600 hover:text-rose-800 font-bold px-2 py-1 hover:bg-rose-50 rounded"
+                >
+                  Padam
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section D: Kewangan (Kira-kira Automatik) -->
+          <div class="bg-slate-50/70 p-6 rounded-2xl border border-slate-200">
+            <div class="flex items-center gap-2 mb-4 pb-2 border-b border-slate-200">
+              <span class="text-xs font-bold uppercase tracking-wider text-uthm-navy bg-white px-2.5 py-1 rounded-md border border-slate-200">
+                D. Maklumat Kewangan & Tajaan
+              </span>
+              <span class="text-xs text-slate-500 font-normal">Kiraan subsidi universiti vs bayaran pelajar</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              
+              <!-- Jumlah Dana Pensijilan Pelajar (Maksimum) -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Jumlah Dana Maksimum
+                </label>
+                <div class="relative">
+                  <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 text-xs font-bold">RM</span>
+                  <input 
+                    type="text" 
+                    id="danaMaksimum" 
+                    value="500.00" 
+                    readonly 
+                    class="w-full bg-slate-200/80 border border-slate-300 text-slate-700 font-bold text-sm rounded-xl pl-10 pr-3 py-2.5 cursor-not-allowed select-none"
+                  >
+                </div>
+                <p class="text-[11px] text-slate-500 mt-1">Dibayar ke Bendahari UTHM (Ketetapan Tetap)</p>
+              </div>
+
+              <!-- Kos / Yuran Sebenar -->
+              <div>
+                <label for="kosSebenar" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Kos / Yuran Sebenar <span class="text-uthm-accent">*</span>
+                </label>
+                <div class="relative">
+                  <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 text-xs font-bold">RM</span>
+                  <input 
+                    type="number" 
+                    id="kosSebenar" 
+                    name="kosSebenar" 
+                    step="0.01" 
+                    min="0" 
+                    required 
+                    placeholder="1200.00" 
+                    oninput="calculateLebihan()"
+                    class="w-full bg-white border border-slate-300 text-slate-900 font-semibold text-sm rounded-xl pl-10 pr-3 py-2.5 focus:ring-2 focus:ring-uthm-navy focus:border-uthm-navy transition"
+                  >
+                </div>
+                <p class="text-[11px] text-slate-500 mt-1">Yuran peperiksaan atau pendaftaran kursus</p>
+              </div>
+
+              <!-- Lebihan Ditanggung Pelajar (Kiraan Automatik) -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Lebihan Ditanggung Pelajar
+                </label>
+                <div class="relative">
+                  <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 text-xs font-bold">RM</span>
+                  <input 
+                    type="text" 
+                    id="lebihanPelajar" 
+                    value="0.00" 
+                    readonly 
+                    class="w-full bg-amber-50 border border-amber-200 text-amber-900 font-bold text-sm rounded-xl pl-10 pr-3 py-2.5 cursor-not-allowed select-none"
+                  >
+                </div>
+                <p id="lebihanTextHelper" class="text-[11px] text-amber-700 font-medium mt-1">Kiraan automatik: Kos Sebenar - Dana UTHM</p>
+              </div>
+
+              <!-- Sumber Pembiayaan Lain -->
+              <div>
+                <label for="sumberPembiayaan" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Sumber Pembiayaan Lain
+                </label>
+                <select 
+                  id="sumberPembiayaan" 
+                  name="sumberPembiayaan" 
+                  class="w-full bg-white border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-uthm-navy focus:border-uthm-navy block p-2.5 transition"
+                >
+                  <option value="Tiada">Tiada / Pembiayaan Sendiri</option>
+                  <option value="Tajaan Luar">Tajaan Luar (Industri / Agensi Kerajaan)</option>
+                  <option value="Zakat">Bantuan Zakat Pelajar</option>
+                  <option value="Endowmen">Dana Endowmen UTHM</option>
+                </select>
+                <p class="text-[11px] text-slate-500 mt-1">Pilih jika menerima tajaan tambahan</p>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Form Submit & Controls -->
+          <div class="pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="text-xs text-slate-500 flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              <span>Audit keselamatan: Maklumat disimpan bersama No. Matrik & cap masa ISO rasmi.</span>
+            </div>
+
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+              <button 
+                type="button" 
+                onclick="resetFormCustom()" 
+                class="w-1/2 sm:w-auto px-5 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold transition flex items-center justify-center gap-2"
+              >
+                Set Semula
+              </button>
+
+              <button 
+                type="submit" 
+                id="btnSubmitRecord" 
+                class="w-1/2 sm:w-auto px-6 py-2.5 rounded-xl bg-uthm-navy hover:bg-uthm-lightnavy active:scale-[0.99] text-white text-xs font-bold shadow-md hover:shadow-lg transition flex items-center justify-center gap-2"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+                </svg>
+                <span>Simpan Rekod Pensijilan</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Student's Existing Certifications Table -->
+      <div class="bg-white rounded-2xl shadow-soft border border-slate-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-slate-50/50">
+          <div>
+            <h3 class="text-sm font-bold text-slate-800">Senarai Permohonan Pensijilan Saya</h3>
+            <p class="text-xs text-slate-500">Rekod yang telah dihantar untuk semakan Penyelaras Fakulti</p>
+          </div>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-uthm-navy">
+            Kemaskini Masa Nyata
+          </span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-100/80 text-slate-600 font-bold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                <th class="p-3.5">Kursus & Kategori</th>
+                <th class="p-3.5">Badan Pengiktiraf</th>
+                <th class="p-3.5">Tempoh Kursus</th>
+                <th class="p-3.5">Status Semasa</th>
+                <th class="p-3.5">Kos & Lebihan</th>
+                <th class="p-3.5">Bukti</th>
+                <th class="p-3.5">Status Pengesahan</th>
+              </tr>
+            </thead>
+            <tbody id="studentRecordsTableBody" class="divide-y divide-slate-100 font-normal">
+              <!-- Dynamically populated via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 2: PENYELARAS FAKULTI (VERIFICATION DATA TABLE)     -->
+    <!-- ======================================================== -->
+    <section id="view-penyelaras" class="view-transition view-hidden space-y-6">
+
+      <!-- Faculty Coordinator Banner -->
+      <div class="bg-white rounded-2xl shadow-soft border border-slate-200 p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center justify-center font-black text-xl shadow-inner">
+            SA
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                MODUL PENYELARAS FAKULTI
+              </span>
+              <span class="text-xs text-slate-500">FSKTM (Sains Komputer & AI)</span>
+            </div>
+            <h2 class="text-lg sm:text-xl font-extrabold text-slate-800 mt-0.5">
+              Dr. Siti Nor Aminah binti Hashim
+            </h2>
+            <p class="text-xs text-slate-500">
+              Penyelaras Pensijilan Profesional & Kompetensi Pelajar Fakulti &bull; ID Staf: <span class="font-mono font-semibold">STAF_FSKTM_042</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Verification Quick Summary Counters -->
+        <div class="grid grid-cols-3 gap-3 text-center">
+          <div class="px-4 py-2.5 bg-amber-50 rounded-xl border border-amber-200">
+            <p class="text-[10px] font-bold text-amber-700 uppercase tracking-wider">Menunggu</p>
+            <p id="coordCountPending" class="text-xl font-black text-amber-900">0</p>
+          </div>
+          <div class="px-4 py-2.5 bg-emerald-50 rounded-xl border border-emerald-200">
+            <p class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Disahkan</p>
+            <p id="coordCountVerified" class="text-xl font-black text-emerald-900">0</p>
+          </div>
+          <div class="px-4 py-2.5 bg-rose-50 rounded-xl border border-rose-200">
+            <p class="text-[10px] font-bold text-rose-700 uppercase tracking-wider">Ditolak</p>
+            <p id="coordCountRejected" class="text-xl font-black text-rose-900">0</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verification Management Table Card -->
+      <div class="bg-white rounded-2xl shadow-soft border border-slate-200 overflow-hidden">
+        
+        <!-- Filter & Search Toolbar -->
+        <div class="p-5 border-b border-slate-200 bg-slate-50/60 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div class="flex-1 max-w-md">
+            <label for="tableSearchInput" class="sr-only">Cari</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              </span>
+              <input 
+                type="text" 
+                id="tableSearchInput" 
+                oninput="filterCoordinatorTable()" 
+                placeholder="Cari No. Matrik, Nama Pelajar, atau Kursus..."
+                class="w-full bg-white border border-slate-300 text-slate-800 text-xs rounded-xl pl-9 pr-3 py-2 focus:ring-2 focus:ring-uthm-navy focus:border-uthm-navy transition"
+              >
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <!-- Filter Status Pengesahan -->
+            <div class="flex items-center gap-2 text-xs">
+              <span class="text-slate-500 font-semibold">Status:</span>
+              <select 
+                id="filterStatusPengesahan" 
+                onchange="filterCoordinatorTable()" 
+                class="bg-white border border-slate-300 text-slate-700 text-xs rounded-xl px-2.5 py-1.5 focus:ring-2 focus:ring-uthm-navy"
+              >
+                <option value="ALL">Semua Pengesahan</option>
+                <option value="Belum Disahkan">Belum Disahkan (Menunggu)</option>
+                <option value="Telah Disahkan">Telah Disahkan</option>
+                <option value="Ditolak">Ditolak</option>
+              </select>
+            </div>
+
+            <!-- Filter Kategori -->
+            <div class="flex items-center gap-2 text-xs">
+              <span class="text-slate-500 font-semibold">Kategori:</span>
+              <select 
+                id="filterKategori" 
+                onchange="filterCoordinatorTable()" 
+                class="bg-white border border-slate-300 text-slate-700 text-xs rounded-xl px-2.5 py-1.5 focus:ring-2 focus:ring-uthm-navy"
+              >
+                <option value="ALL">Semua Kategori</option>
+                <option value="Profesional">Profesional</option>
+                <option value="Kompetensi">Kompetensi</option>
+              </select>
+            </div>
+
+            <button 
+              onclick="resetCoordinatorFilters()" 
+              class="text-xs text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 transition"
+            >
+              Reset Tapisan
+            </button>
+          </div>
+        </div>
+
+        <!-- Table View -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                <th class="p-3.5">No. Matrik & Pelajar</th>
+                <th class="p-3.5">Nama Kursus & Kategori</th>
+                <th class="p-3.5">Badan Pengiktiraf</th>
+                <th class="p-3.5">Status Semasa</th>
+                <th class="p-3.5">Kewangan (RM)</th>
+                <th class="p-3.5 text-center">Bukti Dokumen</th>
+                <th class="p-3.5">Status Pengesahan</th>
+                <th class="p-3.5 text-right">Tindakan Pengesahan</th>
+              </tr>
+            </thead>
+            <tbody id="coordinatorTableBody" class="divide-y divide-slate-100">
+              <!-- Dynamically rendered rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Footer / Audit Notice -->
+        <div class="px-6 py-3 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+          <span id="coordTableShowingCount">Menunjukkan 0 daripada 0 rekod</span>
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Tindakan pengesahan merekodkan ID Penyelaras & cap masa automatik mengikut spesifikasi Audit Trail V1.0.</span>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 3: PENGURUSAN (ANALYTIC DASHBOARD)                  -->
+    <!-- ======================================================== -->
+    <section id="view-pengurusan" class="view-transition view-hidden space-y-6">
+
+      <!-- Executive Header -->
+      <div class="bg-white rounded-2xl shadow-soft border border-slate-200 p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-200">
+              PENGURUSAN TERTINGGI
+            </span>
+            <span class="text-xs text-slate-500">Papan Pemuka Prestasi Universiti</span>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-black text-slate-800 mt-1">
+            Papan Pemuka Analitik Pensijilan & Kompetensi Pelajar
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Pemantauan KPI kebolehpasaran graduan, taburan persijilan profesional, dan penggunaan dana subsidi universiti.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button 
+            onclick="window.print()" 
+            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl border border-slate-300 transition flex items-center gap-2"
+          >
+            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+            <span>Cetak Laporan</span>
+          </button>
+          
+          <button 
+            onclick="openReportModal()" 
+            class="px-4 py-2 bg-uthm-navy hover:bg-uthm-lightnavy text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-2"
+          >
+            <svg class="w-4 h-4 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span>Ringkasan Eksekutif</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Primary Focal KPI: Peratusan Pelajar Mendapat Pensijilan -->
+      <div class="bg-gradient-to-br from-uthm-darknavy via-uthm-navy to-blue-900 rounded-2xl shadow-card p-6 sm:p-7 text-white relative overflow-hidden">
+        <div class="absolute -right-8 -bottom-8 opacity-10 pointer-events-none">
+          <img src="Official-Logo-UTHM-2026 favicon.png" class="w-64 h-64 object-contain" alt="crest">
+        </div>
+
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div class="max-w-2xl">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider bg-amber-400 text-uthm-darknavy flex items-center gap-1.5 shadow">
+                <span class="w-2 h-2 rounded-full bg-uthm-darknavy animate-ping"></span>
+                KPI UTAMA PENGURUSAN UNIVERSITI
+              </span>
+              <span class="text-xs text-blue-200 font-semibold">Sasaran Kebolehpasaran & Kompetensi Pelajar 2026</span>
+            </div>
+            
+            <h3 class="text-lg sm:text-2xl font-black text-white tracking-tight">
+              Peratusan Pelajar Mendapat Pensijilan Profesional & Kompetensi
+            </h3>
+            <p class="text-xs text-blue-100/90 mt-1">
+              Peratusan kumulatif pelajar aktif UTHM yang telah berjaya memperoleh pensijilan profesional dan kompetensi diiktiraf industri bagi melahirkan graduan berkemahiran tinggi.
+            </p>
+
+            <!-- Progress bar toward target -->
+            <div class="mt-4">
+              <div class="flex items-center justify-between text-xs mb-1.5 font-semibold">
+                <span class="text-blue-200">Pencapaian Keseluruhan vs Sasaran KPI Universiti (40.0%)</span>
+                <span id="kpiTargetComparisonText" class="text-emerald-300 font-bold bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30">
+                  +5.8% Melepasi Sasaran
+                </span>
+              </div>
+              <div class="w-full bg-black/30 rounded-full h-4 p-0.5 border border-white/20 relative">
+                <!-- Target 40% Marker Line -->
+                <div class="absolute top-0 bottom-0 left-[40%] w-0.5 bg-amber-400 z-20" title="Sasaran Minimum 40.0%">
+                  <span class="absolute -top-5 -left-3 text-[9px] font-mono text-amber-300 font-bold">40%</span>
+                </div>
+                <div id="kpiPrimaryProgressBar" class="bg-gradient-to-r from-emerald-400 to-teal-300 h-full rounded-full transition-all duration-1000 shadow-sm" style="width: 45.8%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Giant Percentage Stat Box -->
+          <div class="flex flex-col items-center justify-center bg-white/10 backdrop-blur-md px-6 py-5 rounded-2xl border border-white/20 text-center min-w-[230px]">
+            <span class="text-xs uppercase tracking-wider text-blue-200 font-bold">Kadar Pencapaian KPI</span>
+            <div class="flex items-baseline gap-1 my-1">
+              <span id="kpiPrimaryPercentage" class="text-4xl sm:text-5xl font-black text-amber-300 tracking-tight">45.8%</span>
+            </div>
+            <p id="kpiPrimaryRatio" class="text-xs text-blue-100 font-medium">5,720 / 12,500 Pelajar</p>
+            <span id="kpiPrimaryStatusBadge" class="mt-2 text-[10px] bg-emerald-500/20 text-emerald-200 border border-emerald-400/30 px-2.5 py-0.5 rounded-full font-bold">
+              ● Status: Melepasi Sasaran
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Supporting KPI Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        
+        <!-- KPI 1: Jumlah Enrolmen Pelajar Fakulti -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-soft hover:shadow-hover transition group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Jumlah Enrolmen Pelajar UTHM</span>
+            <div class="w-10 h-10 rounded-xl bg-blue-50 text-uthm-navy flex items-center justify-center group-hover:scale-110 transition">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            </div>
+          </div>
+          <p id="kpiTotalStudentsAll" class="text-3xl font-black text-slate-900 tracking-tight">12,500</p>
+          <div class="mt-2 flex items-center justify-between text-xs text-slate-500">
+            <span>7 Buah Fakulti Terlibat</span>
+            <span class="text-blue-700 font-bold bg-blue-50 px-1.5 py-0.5 rounded">Sesi 2025/2026</span>
+          </div>
+        </div>
+
+        <!-- KPI 2: Jumlah Pelajar Berdaftar Pensijilan -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-soft hover:shadow-hover transition group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Pelajar Berdaftar Pensijilan</span>
+            <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center group-hover:scale-110 transition">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </div>
+          </div>
+          <p id="kpiTotalRegisteredStudents" class="text-3xl font-black text-purple-900 tracking-tight">6,690</p>
+          <div class="mt-2 flex items-center justify-between text-xs text-slate-500">
+            <span id="kpiParticipationRate" class="text-purple-800 font-semibold">53.5% Kadar Penyertaan</span>
+            <span class="text-slate-400">Sasaran: &gt;50%</span>
+          </div>
+        </div>
+
+        <!-- KPI 3: Jumlah Pelaburan & Dana Subsidi Dimanfaatkan -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-soft hover:shadow-hover transition group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Subsidi Universiti Dimanfaatkan</span>
+            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center group-hover:scale-110 transition">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+          </div>
+          <p id="kpiTotalSubsidyAmount" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">RM 2.86 Juta</p>
+          <div class="mt-2 flex items-center justify-between text-xs text-slate-500">
+            <span class="text-amber-800 font-semibold">Peruntukan Bendahari UTHM</span>
+            <span class="text-slate-400">Maks RM500/Pelajar</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Charts Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Chart 1: Perbandingan Pencapaian Mengikut Fakulti (Bar Chart) -->
+        <div class="lg:col-span-7 bg-white rounded-2xl shadow-soft border border-slate-200 p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-uthm-navy"></span>
+                Perbandingan Peratusan Pelajar Mendapat Pensijilan Mengikut Fakulti (%)
+              </h3>
+              <span class="text-[11px] font-bold text-uthm-navy bg-blue-50 px-2.5 py-0.5 rounded border border-blue-100">
+                KPI Sasaran: 40%
+              </span>
+            </div>
+            <p class="text-xs text-slate-500 mb-4">
+              Perbandingan kadar kejayaan pelajar memperoleh persijilan bagi setiap fakulti berbanding sasaran 40% universiti.
+            </p>
+          </div>
+
+          <!-- Bar Chart Canvas -->
+          <div class="relative h-72 sm:h-80 w-full">
+            <canvas id="facultyComparisonChart"></canvas>
+          </div>
+
+          <div class="mt-4 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2">
+            <div class="flex items-center gap-3">
+              <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-emerald-600"></span> Melepasi Sasaran (&ge;40%)</span>
+              <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-amber-500"></span> Perlu Ditingkatkan (&lt;40%)</span>
+            </div>
+            <span class="text-uthm-navy font-bold">Sumber: Sistem Maklumat Pelajar (SMP)</span>
+          </div>
+        </div>
+
+        <!-- Chart 2: Distribution of Status Semasa (Pie / Doughnut Chart) -->
+        <div class="lg:col-span-5 bg-white rounded-2xl shadow-soft border border-slate-200 p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                Taburan Status Semasa Pensijilan
+              </h3>
+              <span class="text-[11px] font-bold text-uthm-navy bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                Chart.js
+              </span>
+            </div>
+            <p class="text-xs text-slate-500 mb-4">
+              Pecahan peratusan status semasa pelaksanaan pensijilan pelajar (Selesai, Sedang Berlangsung, Mendaftar, Batal)
+            </p>
+          </div>
+
+          <!-- Chart Canvas Container -->
+          <div class="relative h-64 sm:h-72 w-full flex items-center justify-center">
+            <canvas id="statusPieChart"></canvas>
+          </div>
+
+          <div class="mt-4 pt-4 border-t border-slate-100 grid grid-cols-2 gap-2 text-[11px] text-slate-600">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+              <span>Selesai (Completed)</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+              <span>Sedang Berlangsung</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+              <span>Mendaftar Baru</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+              <span>Batal / Tangguh</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Financial & Faculty Breakdown Table -->
+      <div class="bg-white rounded-2xl shadow-soft border border-slate-200 overflow-hidden">
+        <div class="p-5 border-b border-slate-200 bg-slate-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-sm font-bold text-slate-800">Jadual Perbandingan Pencapaian Pelajar Mendapat Pensijilan Mengikut Fakulti</h3>
+            <p class="text-xs text-slate-500">Perbandingan bilangan pelajar fakulti, kadar penyertaan, peratusan kelulusan, dan status sasaran universiti</p>
+          </div>
+          <span class="text-xs font-bold px-2.5 py-1 rounded bg-slate-200/80 text-slate-700">
+            Sesi Akademik 2025/2026
+          </span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                <th class="p-3.5">Fakulti</th>
+                <th class="p-3.5 text-center">Bilangan Pelajar Fakulti</th>
+                <th class="p-3.5 text-center">Pelajar Berdaftar</th>
+                <th class="p-3.5 text-center">Pelajar Berjaya Mendapat Sijil</th>
+                <th class="p-3.5 text-center">Peratusan Mendapat Sijil (%) [KPI UTAMA]</th>
+                <th class="p-3.5 text-center">Status Sasaran (KPI 40%)</th>
+                <th class="p-3.5 text-right">Subsidi Dimanfaatkan (RM)</th>
+              </tr>
+            </thead>
+            <tbody id="managementFacultyTableBody" class="divide-y divide-slate-100">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- FOOTER                                     -->
+  <!-- ========================================== -->
+  <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-slate-500 text-xs no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <img src="Official-Logo-UTHM-2026 favicon.png" alt="UTHM Emblem" class="w-7 h-7 object-contain">
+        <div>
+          <p class="font-bold text-slate-700">Universiti Tun Hussein Onn Malaysia (UTHM)</p>
+          <p class="text-[11px] text-slate-500">Sistem Maklumat Pelajar (SMP) &mdash; Pengurusan Pensijilan Pelajar</p>
+        </div>
+      </div>
+      <div class="text-center md:text-right text-[11px] text-slate-400">
+        <p>&copy; 2026 Universiti Tun Hussein Onn Malaysia. Hak Cipta Terpelihara.</p>
+        <p class="mt-0.5">Sistem Maklumat Pelajar (SMP) &bull; Versi 1.0 (Berdasarkan Kamus Data Rasmi)</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- MODAL: DOKUMEN BUKTI PREVIEW (SIJIL MOCK)  -->
+  <!-- ========================================== -->
+  <div id="documentModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200 transform transition-all animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Modal Header -->
+      <div class="bg-uthm-navy text-white px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <div>
+            <h4 class="text-sm font-bold" id="docModalTitle">Paparan Bukti Dokumen Sijil</h4>
+            <p class="text-[11px] text-blue-200" id="docModalSubtitle">Semakan Kesahihan Dokumen Pelajar</p>
+          </div>
+        </div>
+        <button onclick="closeDocumentModal()" class="text-white/80 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Certificate Preview Container -->
+      <div class="p-6 bg-slate-100 flex flex-col items-center">
+        <!-- Mock Certificate Design -->
+        <div class="w-full bg-white border-8 border-slate-200 rounded-xl p-8 shadow-inner relative text-center">
+          <!-- Border watermark & header -->
+          <div class="border-2 border-amber-600/30 p-6 rounded-lg relative bg-[#FCFDFD]">
+            
+            <div class="flex justify-between items-start mb-6">
+              <img src="Official-Logo-UTHM-2026 favicon.png" class="h-10 w-auto opacity-80" alt="UTHM">
+              <div class="text-right">
+                <span class="text-[10px] font-mono text-slate-400 block" id="docModalSerial">REF: ECC-2026-9812</span>
+                <span class="inline-block px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">DISAHKAN SAH</span>
+              </div>
+            </div>
+
+            <p class="text-[11px] uppercase tracking-widest text-slate-400 font-bold mb-1">SIJIL PENGIKTIRAFAN / KELAYAKAN</p>
+            <h3 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-2" id="docModalCourseName">
+              CERTIFIED ETHICAL HACKER (CEH) v12
+            </h3>
+            
+            <p class="text-xs text-slate-500 mb-1">Dianugerahkan secara rasmi kepada:</p>
+            <h4 class="text-base font-extrabold text-uthm-navy border-b-2 border-slate-200 pb-2 mb-3 inline-block px-6" id="docModalStudentName">
+              MUHAMMAD HARITH BIN AZIZ
+            </h4>
+            
+            <div class="grid grid-cols-2 gap-4 text-left text-xs bg-slate-50 p-3 rounded-lg border border-slate-200 mt-2">
+              <div>
+                <p class="text-[10px] text-slate-400 font-bold uppercase">Badan Pengeluar</p>
+                <p class="font-bold text-slate-700" id="docModalIssuer">EC-Council International</p>
+              </div>
+              <div>
+                <p class="text-[10px] text-slate-400 font-bold uppercase">No. Matrik</p>
+                <p class="font-bold text-slate-700" id="docModalMatrik">AI210045</p>
+              </div>
+              <div>
+                <p class="text-[10px] text-slate-400 font-bold uppercase">Status / Gred</p>
+                <p class="font-bold text-emerald-700" id="docModalGrade">Lulus (Score: 92%)</p>
+              </div>
+              <div>
+                <p class="text-[10px] text-slate-400 font-bold uppercase">Tarikh Tamat</p>
+                <p class="font-bold text-slate-700" id="docModalDate">28 Februari 2026</p>
+              </div>
+            </div>
+
+            <div class="mt-6 flex justify-between items-end pt-4 border-t border-slate-200 text-[10px] text-slate-400">
+              <div class="text-left">
+                <p class="font-mono text-[9px]">Laluan Fail Pelayan:</p>
+                <p class="font-mono text-slate-600 font-semibold truncate max-w-[200px]" id="docModalPath">/uploads/certificates/AI210045_cert.pdf</p>
+              </div>
+              <div class="w-12 h-12 bg-slate-200 border border-slate-300 rounded flex items-center justify-center text-[9px] font-mono text-slate-500">
+                [QR CODE]
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3.5 bg-white border-t border-slate-200 flex items-center justify-between">
+        <span class="text-xs text-slate-500">Saiz Fail Dokumen: <strong>1.45 MB (PDF)</strong></span>
+        <div class="flex items-center gap-2">
+          <button 
+            onclick="simulateDownloadDoc()" 
+            class="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-uthm-navy text-xs font-bold rounded-xl border border-blue-200 transition flex items-center gap-1.5"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span>Muat Turun Fail</span>
+          </button>
+          <button 
+            onclick="closeDocumentModal()" 
+            class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded-xl transition"
+          >
+            Tutup
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: PENOLAKAN PERMOHONAN (REJECT REASON)-->
+  <!-- ========================================== -->
+  <div id="rejectModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
+      <div class="bg-rose-700 text-white px-6 py-4 flex items-center justify-between">
+        <h4 class="text-sm font-bold flex items-center gap-2">
+          <svg class="w-5 h-5 text-rose-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          Tolak Pengesahan Sijil
+        </h4>
+        <button onclick="closeRejectModal()" class="text-white/80 hover:text-white p-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <p class="text-xs text-slate-600">
+          Sila nyatakan sebab penolakan permohonan pensijilan bagi rekod: <br>
+          <span class="font-bold text-slate-800" id="rejectRecordName">Kursus: Certified Ethical Hacker</span>
+        </p>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Sebab Penolakan</label>
+          <select id="rejectReasonPreset" onchange="applyRejectPreset(this.value)" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl p-2.5 mb-2 focus:ring-2 focus:ring-rose-500">
+            <option value="Dokumen bukti sijil tidak jelas / sukar dibaca.">Dokumen bukti sijil tidak jelas / sukar dibaca</option>
+            <option value="Sijil telah tamat tempoh sah laku.">Sijil telah tamat tempoh sah laku</option>
+            <option value="Nama pada sijil berbeza dengan nama pelajar SMP.">Nama pada sijil berbeza dengan nama pelajar SMP</option>
+            <option value="Kategori kursus tidak menepati kriteria pensijilan UTHM.">Kategori kursus tidak menepati kriteria universiti</option>
+            <option value="Lain-lain (Nyatakan di bawah)">Lain-lain (Sila taip di bawah)</option>
+          </select>
+          <textarea 
+            id="rejectReasonText" 
+            rows="3" 
+            placeholder="Tulis ulasan pembetulan untuk rujukan pelajar..."
+            class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl p-2.5 focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="px-6 py-3 bg-slate-50 border-t border-slate-200 flex justify-end gap-2">
+        <button onclick="closeRejectModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-200 rounded-xl transition">
+          Batal
+        </button>
+        <button onclick="confirmRejectAction()" class="px-4 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-xl shadow transition">
+          Sahkan Penolakan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: EXECUTIVE REPORT MODAL              -->
+  <!-- ========================================== -->
+  <div id="reportModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200 animate-in fade-in duration-200">
+      <div class="bg-uthm-darknavy text-white px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <img src="Official-Logo-UTHM-2026 favicon.png" class="h-8 w-auto" alt="logo">
+          <div>
+            <h4 class="text-sm font-bold">Ringkasan Eksekutif Pensijilan Profesional & Kompetensi</h4>
+            <p class="text-[11px] text-blue-200">Laporan Eksekutif Universiti &mdash; Sesi 2025/2026</p>
+          </div>
+        </div>
+        <button onclick="closeReportModal()" class="text-white/80 hover:text-white p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto text-xs text-slate-700">
+        <div class="p-4 bg-blue-50 rounded-xl border border-blue-200">
+          <h5 class="font-bold text-uthm-navy mb-1 text-sm">Status Keseluruhan Pencapaian KPI Universiti</h5>
+          <p>
+            Berdasarkan data terkini daripada Sistem Maklumat Pelajar (SMP), seramai <strong id="repTotalRecords">5,720</strong> pelajar telah berjaya memperoleh persijilan profesional dan kompetensi (pencapaian KPI Utama: <strong id="repCompletedPct">45.8%</strong> melepasi sasaran 40.0% UTHM), membuktikan keberkesanan inisiatif pembiayaan yuran pensijilan pelajar.
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <h5 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Perincian Kewangan Terkini</h5>
+          <div class="grid grid-cols-2 gap-3 text-center">
+            <div class="p-3 bg-slate-50 border rounded-xl">
+              <p class="text-[10px] text-slate-500 uppercase font-semibold">Jumlah Nilai Kursus Sebenar</p>
+              <p class="text-base font-extrabold text-slate-900 mt-1" id="repActualCost">RM 0.00</p>
+            </div>
+            <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+              <p class="text-[10px] text-emerald-700 uppercase font-semibold">Dana Subsidi UTHM Dimanfaatkan</p>
+              <p class="text-base font-extrabold text-emerald-800 mt-1" id="repSubsidyUsed">RM 0.00</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h5 class="font-bold text-slate-800 text-xs uppercase tracking-wider mb-2">Cadangan & Tindakan Susulan</h5>
+          <ul class="list-disc list-inside space-y-1 text-slate-600 pl-1">
+            <li>Memperluaskan senarai badan pengiktirafan antarabangsa (Cisco, AWS, Microsoft, CIDB, NIOSH) dalam katalog rujukan sistem.</li>
+            <li>Menggalakkan pengesahan awal oleh Penyelaras Fakulti sebelum minggu peperiksaan akhir semester.</li>
+            <li>Mengintegrasikan sijil digital terus ke dalam Transkrip Kemahiran & Kebolehpasaran Pelajar (Graduate Employability).</li>
+          </ul>
+        </div>
+      </div>
+      <div class="px-6 py-3 bg-slate-50 border-t border-slate-200 flex justify-between items-center">
+        <span class="text-[11px] text-slate-400 font-mono">UTHM-SMP-REP-2026-V1</span>
+        <button onclick="closeReportModal()" class="px-4 py-2 text-xs font-bold bg-uthm-navy text-white rounded-xl hover:bg-uthm-lightnavy transition">
+          Selesai Semakan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- TOAST NOTIFICATION POPUP                   -->
+  <!-- ========================================== -->
+  <div id="toastNotification" class="fixed bottom-5 right-5 z-50 hidden max-w-sm w-full bg-white border border-slate-200 rounded-2xl shadow-hover p-4 transition-all duration-300 transform translate-y-4 opacity-0 flex items-start gap-3">
+    <div id="toastIconContainer" class="p-2 rounded-xl bg-emerald-100 text-emerald-700 flex-shrink-0">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+    </div>
+    <div class="flex-1">
+      <p id="toastTitle" class="text-xs font-bold text-slate-800">Berjaya Disimpan</p>
+      <p id="toastMessage" class="text-[11px] text-slate-500 mt-0.5">Rekod pensijilan telah berjaya didaftarkan ke pangkalan data SMP.</p>
+    </div>
+    <button onclick="hideToast()" class="text-slate-400 hover:text-slate-600 p-1">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- JAVASCRIPT APPLICATION LOGIC & DATA MANAGEMENT           -->
+  <!-- ======================================================== -->
+  <script>
+    /**
+     * Data Model & State Management
+     * Based on Official Kamus Data UTHM (v1.0):
+     * A. Maklumat Pelajar (No Matrik, Nama, Fakulti & Program)
+     * B. Maklumat Pensijilan (ID Sijil, Kategori, Nama Kursus, Badan Pengiktiraf)
+     * C. Pelaksanaan (ID Transaksi, Tarikh Mula, Tarikh Tamat, Status Semasa, Mod Pelaksanaan)
+     * D. Pencapaian (Keputusan/Gred, No Siri, Tarikh Luput, Bukti Dokumen)
+     * E. Kewangan (Dana Maksimum RM500, Kos Sebenar, Lebihan Ditanggung Pelajar, Sumber Pembiayaan Lain)
+     * F. Pengesahan (Status Pengesahan, Disahkan Oleh, Tarikh Disahkan)
+     */
+    let currentRole = 'pelajar';
+    let uploadedFileCache = null;
+    let pendingRejectRecordId = null;
+
+    // Charts references for dynamic updates
+    let statusChartInstance = null;
+    let categoryChartInstance = null;
+
+    // Shared State: Central Repository of Submissions
+    const certificationRecords = [
+      {
+        id: 1001,
+        noMatrik: "AI210045",
+        namaPelajar: "MUHAMMAD HARITH BIN AZIZ",
+        fakulti: "FSKTM",
+        program: "Sarjana Muda Sains Komputer (Keselamatan Maklumat) dengan Kepujian",
+        kategori: "Profesional",
+        namaKursus: "Certified Ethical Hacker (CEH) v12",
+        badanPengiktiraf: "EC-Council",
+        tarikhMula: "2026-01-15",
+        tarikhTamat: "2026-02-28",
+        statusSemasa: "Selesai",
+        modPelaksanaan: "Hibrid",
+        keputusan: "Lulus (Distinction)",
+        noSiri: "ECC-98214-MY",
+        tarikhLuput: "2029-02-28",
+        buktiDokumen: "ceh_cert_harith.pdf",
+        danaMaksimum: 500.00,
+        kosSebenar: 1650.00,
+        lebihanDitanggung: 1150.00,
+        sumberPembiayaan: "Tajaan Luar",
+        statusPengesahan: "Telah Disahkan",
+        disahkanOleh: "STAF_FSKTM_042",
+        tarikhDisahkan: "2026-03-02 10:15:30"
+      },
+      {
+        id: 1002,
+        noMatrik: "AI210045",
+        namaPelajar: "MUHAMMAD HARITH BIN AZIZ",
+        fakulti: "FSKTM",
+        program: "Sarjana Muda Sains Komputer (Keselamatan Maklumat) dengan Kepujian",
+        kategori: "Profesional",
+        namaKursus: "AWS Certified Solutions Architect - Associate",
+        badanPengiktiraf: "Amazon Web Services (AWS)",
+        tarikhMula: "2026-03-01",
+        tarikhTamat: "2026-04-15",
+        statusSemasa: "Sedang Berlangsung",
+        modPelaksanaan: "Atas Talian",
+        keputusan: "Dalam Latihan",
+        noSiri: "-",
+        tarikhLuput: "-",
+        buktiDokumen: "aws_exam_confirmation.pdf",
+        danaMaksimum: 500.00,
+        kosSebenar: 680.00,
+        lebihanDitanggung: 180.00,
+        sumberPembiayaan: "Tiada",
+        statusPengesahan: "Belum Disahkan",
+        disahkanOleh: "-",
+        tarikhDisahkan: "-"
+      },
+      {
+        id: 1003,
+        noMatrik: "CE220019",
+        namaPelajar: "NURUL IZZAH BINTI KHAIRUDDIN",
+        fakulti: "FKEE",
+        program: "Sarjana Muda Kejuruteraan Elektrik dengan Kepujian",
+        kategori: "Kompetensi",
+        namaKursus: "Sijil Kekompetenan Pendawai Elektrik (PW4)",
+        badanPengiktiraf: "Suruhanjaya Tenaga (ST)",
+        tarikhMula: "2025-11-01",
+        tarikhTamat: "2026-01-20",
+        statusSemasa: "Selesai",
+        modPelaksanaan: "Bersemuka",
+        keputusan: "Lulus",
+        noSiri: "ST-PW4-2026-441",
+        tarikhLuput: "Seumur Hidup",
+        buktiDokumen: "sijil_pw4_izzah.jpg",
+        danaMaksimum: 500.00,
+        kosSebenar: 850.00,
+        lebihanDitanggung: 350.00,
+        sumberPembiayaan: "Zakat",
+        statusPengesahan: "Belum Disahkan",
+        disahkanOleh: "-",
+        tarikhDisahkan: "-"
+      },
+      {
+        id: 1004,
+        noMatrik: "CD210112",
+        namaPelajar: "CHONG WEI JIAN",
+        fakulti: "FKM",
+        program: "Sarjana Muda Kejuruteraan Mekanikal dengan Kepujian",
+        kategori: "Profesional",
+        namaKursus: "Certified SolidWorks Professional (CSWP)",
+        badanPengiktiraf: "Dassault Systemes",
+        tarikhMula: "2026-02-10",
+        tarikhTamat: "2026-03-25",
+        statusSemasa: "Sedang Berlangsung",
+        modPelaksanaan: "Hibrid",
+        keputusan: "Dalam Latihan",
+        noSiri: "-",
+        tarikhLuput: "-",
+        buktiDokumen: "cswp_receipt_voucher.pdf",
+        danaMaksimum: 500.00,
+        kosSebenar: 500.00,
+        lebihanDitanggung: 0.00,
+        sumberPembiayaan: "Tiada",
+        statusPengesahan: "Belum Disahkan",
+        disahkanOleh: "-",
+        tarikhDisahkan: "-"
+      },
+      {
+        id: 1005,
+        noMatrik: "AF220078",
+        namaPelajar: "SITI AISYAH BINTI RAZALI",
+        fakulti: "FKAAB",
+        program: "Sarjana Muda Kejuruteraan Awam dengan Kepujian",
+        kategori: "Kompetensi",
+        namaKursus: "Kad Hijau CIDB (Safety Induction for Construction Workers)",
+        badanPengiktiraf: "CIDB Malaysia",
+        tarikhMula: "2026-01-10",
+        tarikhTamat: "2026-01-12",
+        statusSemasa: "Selesai",
+        modPelaksanaan: "Bersemuka",
+        keputusan: "Lulus",
+        noSiri: "CIDB-GRN-881923",
+        tarikhLuput: "2028-01-12",
+        buktiDokumen: "kad_hijau_aisyah.png",
+        danaMaksimum: 500.00,
+        kosSebenar: 150.00,
+        lebihanDitanggung: 0.00,
+        sumberPembiayaan: "Tiada",
+        statusPengesahan: "Telah Disahkan",
+        disahkanOleh: "STAF_FKAAB_019",
+        tarikhDisahkan: "2026-01-18 14:20:10"
+      },
+      {
+        id: 1006,
+        noMatrik: "AI220090",
+        namaPelajar: "DANIAL HAFIZ BIN MOHD YUSOF",
+        fakulti: "FSKTM",
+        program: "Sarjana Muda Sains Komputer (Kejuruteraan Perisian)",
+        kategori: "Profesional",
+        namaKursus: "Cisco Certified Network Associate (CCNA)",
+        badanPengiktiraf: "Cisco Systems",
+        tarikhMula: "2026-02-01",
+        tarikhTamat: "2026-03-30",
+        statusSemasa: "Batal",
+        modPelaksanaan: "Atas Talian",
+        keputusan: "Gagal",
+        noSiri: "-",
+        tarikhLuput: "-",
+        buktiDokumen: "surat_penarikan_diri.pdf",
+        danaMaksimum: 500.00,
+        kosSebenar: 1200.00,
+        lebihanDitanggung: 700.00,
+        sumberPembiayaan: "Tiada",
+        statusPengesahan: "Ditolak",
+        disahkanOleh: "STAF_FSKTM_042",
+        tarikhDisahkan: "2026-03-05 16:45:00"
+      },
+      {
+        id: 1007,
+        noMatrik: "AP210056",
+        namaPelajar: "MOHD SYAMIL BIN ZULKIFLI",
+        fakulti: "FPTP",
+        program: "Sarjana Muda Pengurusan Teknologi (Pengeluaran dan Operasi)",
+        kategori: "Kompetensi",
+        namaKursus: "Lean Six Sigma Yellow Belt (SSYB)",
+        badanPengiktiraf: "Six Sigma Council",
+        tarikhMula: "2026-03-05",
+        tarikhTamat: "2026-03-12",
+        statusSemasa: "Mendaftar",
+        modPelaksanaan: "Atas Talian",
+        keputusan: "Dalam Latihan",
+        noSiri: "-",
+        tarikhLuput: "-",
+        buktiDokumen: "ssyb_confirmation_slip.pdf",
+        danaMaksimum: 500.00,
+        kosSebenar: 450.00,
+        lebihanDitanggung: 0.00,
+        sumberPembiayaan: "Endowmen",
+        statusPengesahan: "Belum Disahkan",
+        disahkanOleh: "-",
+        tarikhDisahkan: "-"
+      }
+    ];
+
+    // ==========================================
+    // INITIALIZATION & EVENT LISTENERS
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      initClock();
+      renderAllViews();
+    });
+
+    function initClock() {
+      const clockEl = document.getElementById('liveClock');
+      function update() {
+        const now = new Date();
+        const options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+        clockEl.textContent = now.toLocaleDateString('ms-MY', options) + ' (MYT)';
+      }
+      update();
+      setInterval(update, 1000);
+    }
+
+    // ==========================================
+    // ROLE SWITCHING ENGINE
+    // ==========================================
+    function switchRole(role) {
+      currentRole = role;
+      
+      const views = {
+        pelajar: document.getElementById('view-pelajar'),
+        penyelaras: document.getElementById('view-penyelaras'),
+        pengurusan: document.getElementById('view-pengurusan')
+      };
+
+      const tabs = {
+        pelajar: document.getElementById('role-tab-pelajar'),
+        penyelaras: document.getElementById('role-tab-penyelaras'),
+        pengurusan: document.getElementById('role-tab-pengurusan')
+      };
+
+      // Reset Tab Styling
+      Object.keys(tabs).forEach(k => {
+        tabs[k].className = "role-tab-btn flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all duration-200";
+      });
+
+      // Active Tab Styling
+      tabs[role].className = "role-tab-btn flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 shadow-sm bg-white text-uthm-navy border border-slate-200";
+
+      // Toggle Views with transition
+      Object.keys(views).forEach(k => {
+        if (k === role) {
+          views[k].classList.remove('view-hidden');
+          views[k].classList.add('view-visible');
+        } else {
+          views[k].classList.remove('view-visible');
+          views[k].classList.add('view-hidden');
+        }
+      });
+
+      // Update Simulation Profile in Header & Banner
+      updateSimulatedProfile(role);
+
+      // If switching to Management, initialize or update Chart.js
+      if (role === 'pengurusan') {
+        setTimeout(() => {
+          renderManagementCharts();
+        }, 50);
+      }
+
+      showToast("Tukar Peranan Pengguna", `Kini berada dalam paparan: ${getRoleTitle(role)}`, "info");
+    }
+
+    function getRoleTitle(role) {
+      switch(role) {
+        case 'pelajar': return 'Pelajar (Student)';
+        case 'penyelaras': return 'Penyelaras Fakulti (Faculty Coordinator)';
+        case 'pengurusan': return 'Pengurusan Universiti (Management)';
+        default: return role;
+      }
+    }
+
+    function updateSimulatedProfile(role) {
+      const avatar = document.getElementById('simulatedUserAvatar');
+      const name = document.getElementById('simulatedUserName');
+      const roleText = document.getElementById('simulatedUserRole');
+      const bannerTag = document.getElementById('bannerRoleTag');
+      const bannerDesc = document.getElementById('bannerRoleDesc');
+
+      if (role === 'pelajar') {
+        avatar.textContent = "MH";
+        avatar.className = "w-8 h-8 rounded-full bg-blue-100 border border-blue-200 text-uthm-navy flex items-center justify-center font-bold text-xs shadow-sm";
+        name.textContent = "M. Harith bin Aziz";
+        roleText.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Pelajar (FSKTM)`;
+        bannerTag.textContent = "Mod Pelajar";
+        bannerTag.className = "font-bold uppercase tracking-wider text-[11px] px-1.5 py-0.5 rounded bg-blue-200/80 mr-1.5 text-uthm-navy";
+        bannerDesc.textContent = "Anda sedang mengakses portal pendaftaran pensijilan pelajar dengan integrasi rekod SMP UTHM.";
+      } else if (role === 'penyelaras') {
+        avatar.textContent = "SA";
+        avatar.className = "w-8 h-8 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-900 flex items-center justify-center font-bold text-xs shadow-sm";
+        name.textContent = "Dr. Siti Nor Aminah";
+        roleText.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Penyelaras FSKTM`;
+        bannerTag.textContent = "Mod Penyelaras Fakulti";
+        bannerTag.className = "font-bold uppercase tracking-wider text-[11px] px-1.5 py-0.5 rounded bg-emerald-200 text-emerald-900 mr-1.5";
+        bannerDesc.textContent = "Semak permohonan pensijilan pelajar di bawah fakulti anda. Klik Sahkan atau Tolak pada senarai di bawah.";
+      } else if (role === 'pengurusan') {
+        avatar.textContent = "PU";
+        avatar.className = "w-8 h-8 rounded-full bg-purple-100 border border-purple-300 text-purple-900 flex items-center justify-center font-bold text-xs shadow-sm";
+        name.textContent = "Pengurusan Universiti";
+        roleText.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-purple-600"></span> Pentadbir Eksekutif`;
+        bannerTag.textContent = "Mod Pengurusan";
+        bannerTag.className = "font-bold uppercase tracking-wider text-[11px] px-1.5 py-0.5 rounded bg-purple-200 text-purple-900 mr-1.5";
+        bannerDesc.textContent = "Analisis statistik KPI kebolehpasaran, taburan pensijilan pelajar, dan penggunaan subsidi Bendahari.";
+      }
+    }
+
+    // ==========================================
+    // VIEW 1: PELAJAR LOGIC & CALCULATIONS
+    // ==========================================
+    function calculateLebihan() {
+      const danaMaksimum = 500.00;
+      const kosInput = document.getElementById('kosSebenar');
+      const lebihanInput = document.getElementById('lebihanPelajar');
+      const helper = document.getElementById('lebihanTextHelper');
+
+      let kos = parseFloat(kosInput.value);
+      if (isNaN(kos) || kos < 0) {
+        kos = 0;
+      }
+
+      const lebihan = Math.max(0, kos - danaMaksimum);
+      lebihanInput.value = lebihan.toFixed(2);
+
+      if (lebihan > 0) {
+        lebihanInput.className = "w-full bg-amber-50 border border-amber-300 text-amber-900 font-bold text-sm rounded-xl pl-10 pr-3 py-2.5 cursor-not-allowed select-none";
+        helper.textContent = `Pelajar perlu menanggung bayaran lebihan sebanyak RM ${lebihan.toFixed(2)}`;
+        helper.className = "text-[11px] text-amber-700 font-semibold mt-1";
+      } else {
+        lebihanInput.className = "w-full bg-emerald-50 border border-emerald-300 text-emerald-800 font-bold text-sm rounded-xl pl-10 pr-3 py-2.5 cursor-not-allowed select-none";
+        helper.textContent = "Ditanggung sepenuhnya di bawah subsidi kuota maksimum RM 500.00";
+        helper.className = "text-[11px] text-emerald-700 font-semibold mt-1";
+      }
+    }
+
+    function toggleSeumurHidup(isChecked) {
+      const dateInput = document.getElementById('tarikhLuput');
+      const hint = document.getElementById('tarikhLuputHint');
+      if (isChecked) {
+        dateInput.value = "";
+        dateInput.disabled = true;
+        dateInput.classList.add('bg-slate-200', 'cursor-not-allowed');
+        hint.textContent = "Sijil diiktiraf sah seumur hidup (tiada pembaharuan).";
+      } else {
+        dateInput.disabled = false;
+        dateInput.classList.remove('bg-slate-200', 'cursor-not-allowed');
+        hint.textContent = "Boleh dikosongkan jika tiada tarikh luput";
+      }
+    }
+
+    function handleFileUpload(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const maxSize = 2 * 1024 * 1024; // 2MB
+        
+        if (file.size > maxSize) {
+          alert("Amaran: Saiz fail melebihi had maksimum 2MB! Sila pilih fail PDF, JPG, atau PNG yang lebih kecil.");
+          input.value = "";
+          return;
+        }
+
+        uploadedFileCache = {
+          name: file.name,
+          size: (file.size / (1024 * 1024)).toFixed(2) + " MB",
+          type: file.type
+        };
+
+        document.getElementById('fileNameDisplay').textContent = file.name;
+        document.getElementById('fileSizeDisplay').textContent = `${uploadedFileCache.size} • Sedia untuk dimuat naik`;
+        document.getElementById('fileUploadPreview').classList.remove('hidden');
+      }
+    }
+
+    function removeUploadedFile() {
+      document.getElementById('buktiDokumen').value = "";
+      uploadedFileCache = null;
+      document.getElementById('fileUploadPreview').classList.add('hidden');
+    }
+
+    function handleStatusChange(status) {
+      const gredSelect = document.getElementById('keputusanGred');
+      if (status === 'Sedang Berlangsung' || status === 'Mendaftar') {
+        gredSelect.value = "Dalam Latihan";
+      } else if (status === 'Selesai') {
+        gredSelect.value = "Lulus";
+      }
+    }
+
+    function handleFormSubmit(event) {
+      event.preventDefault();
+
+      const form = event.target;
+      const kategori = form.kategoriKursus.value;
+      const namaKursus = form.namaKursus.value.trim();
+      const badanPengiktiraf = form.badanPengiktiraf.value.trim();
+      const tarikhMula = form.tarikhMula.value;
+      const tarikhTamat = form.tarikhTamat.value;
+      const statusSemasa = form.statusSemasa.value;
+      const modPelaksanaan = form.modPelaksanaan.value;
+      const keputusanGred = form.keputusanGred.value;
+      const noSiriSijil = form.noSiriSijil.value.trim() || "-";
+      const isSeumurHidup = document.getElementById('seumurHidupCheck').checked;
+      const tarikhLuput = isSeumurHidup ? "Seumur Hidup" : (form.tarikhLuput.value || "-");
+      
+      const kosSebenar = parseFloat(form.kosSebenar.value) || 0;
+      const danaMaksimum = 500.00;
+      const lebihanDitanggung = Math.max(0, kosSebenar - danaMaksimum);
+      const sumberPembiayaan = form.sumberPembiayaan.value;
+
+      const fileName = uploadedFileCache ? uploadedFileCache.name : "bukti_dokumen_sijil.pdf";
+
+      // Create new transaction record
+      const newRecord = {
+        id: Date.now(),
+        noMatrik: "AI210045",
+        namaPelajar: "MUHAMMAD HARITH BIN AZIZ",
+        fakulti: "FSKTM",
+        program: "Sarjana Muda Sains Komputer (Keselamatan Maklumat) dengan Kepujian",
+        kategori: kategori,
+        namaKursus: namaKursus,
+        badanPengiktiraf: badanPengiktiraf,
+        tarikhMula: tarikhMula,
+        tarikhTamat: tarikhTamat,
+        statusSemasa: statusSemasa,
+        modPelaksanaan: modPelaksanaan,
+        keputusan: keputusanGred,
+        noSiri: noSiriSijil,
+        tarikhLuput: tarikhLuput,
+        buktiDokumen: fileName,
+        danaMaksimum: danaMaksimum,
+        kosSebenar: kosSebenar,
+        lebihanDitanggung: lebihanDitanggung,
+        sumberPembiayaan: sumberPembiayaan,
+        statusPengesahan: "Belum Disahkan",
+        disahkanOleh: "-",
+        tarikhDisahkan: "-"
+      };
+
+      // Add to beginning of records
+      certificationRecords.unshift(newRecord);
+
+      // Re-render UI
+      renderAllViews();
+
+      // Trigger success notification
+      showToast(
+        "Pendaftaran Berjaya!", 
+        `Rekod '${namaKursus}' telah berjaya didaftarkan dan dihantar ke Penyelaras Fakulti.`, 
+        "success"
+      );
+
+      // Reset Form
+      resetFormCustom();
+    }
+
+    function resetFormCustom() {
+      document.getElementById('certificationForm').reset();
+      document.getElementById('danaMaksimum').value = "500.00";
+      document.getElementById('lebihanPelajar').value = "0.00";
+      document.getElementById('tarikhLuput').disabled = false;
+      document.getElementById('tarikhLuput').classList.remove('bg-slate-200', 'cursor-not-allowed');
+      removeUploadedFile();
+      calculateLebihan();
+    }
+
+    function renderStudentRecords() {
+      const tbody = document.getElementById('studentRecordsTableBody');
+      const studentRecords = certificationRecords.filter(r => r.noMatrik === "AI210045");
+      
+      // Update header student stats
+      const totalCount = studentRecords.length;
+      const verifiedCount = studentRecords.filter(r => r.statusPengesahan === "Telah Disahkan").length;
+      document.getElementById('studentStatsTotal').textContent = `${totalCount} Rekod`;
+      document.getElementById('studentStatsVerified').textContent = `• ${verifiedCount} Disahkan`;
+
+      if (studentRecords.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="p-6 text-center text-slate-400">
+              Tiada rekod pensijilan didaftarkan setakat ini. Sila isi borang di atas.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = studentRecords.map(r => `
+        <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+          <td class="p-3.5">
+            <div class="font-bold text-slate-800 text-xs">${escapeHtml(r.namaKursus)}</div>
+            <div class="mt-0.5">
+              <span class="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ${r.kategori === 'Profesional' ? 'bg-indigo-100 text-indigo-800' : 'bg-teal-100 text-teal-800'}">
+                ${escapeHtml(r.kategori)}
+              </span>
+              <span class="text-[10px] text-slate-400 ml-1">Mod: ${escapeHtml(r.modPelaksanaan)}</span>
+            </div>
+          </td>
+          <td class="p-3.5 font-semibold text-slate-700">
+            ${escapeHtml(r.badanPengiktiraf)}
+          </td>
+          <td class="p-3.5 text-slate-600 text-[11px]">
+            ${formatDate(r.tarikhMula)} &rarr; ${formatDate(r.tarikhTamat)}
+          </td>
+          <td class="p-3.5">
+            ${getStatusSemasaBadge(r.statusSemasa)}
+          </td>
+          <td class="p-3.5">
+            <span class="font-bold text-slate-800">RM ${r.kosSebenar.toFixed(2)}</span>
+            ${r.lebihanDitanggung > 0 ? `<div class="text-[10px] text-amber-700 font-semibold">+RM ${r.lebihanDitanggung.toFixed(2)} (Lebihan)</div>` : `<div class="text-[10px] text-emerald-700 font-semibold">Tajaan Penuh</div>`}
+          </td>
+          <td class="p-3.5">
+            <button 
+              type="button" 
+              onclick="openDocumentModal(${r.id})" 
+              class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-uthm-navy text-[11px] font-bold transition border border-blue-200"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              <span>Lihat</span>
+            </button>
+          </td>
+          <td class="p-3.5">
+            ${getStatusPengesahanBadge(r.statusPengesahan)}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // ==========================================
+    // VIEW 2: PENYELARAS FAKULTI LOGIC
+    // ==========================================
+    function renderCoordinatorTable() {
+      const tbody = document.getElementById('coordinatorTableBody');
+      const searchVal = (document.getElementById('tableSearchInput')?.value || "").toLowerCase();
+      const statusFilter = document.getElementById('filterStatusPengesahan')?.value || "ALL";
+      const kategoriFilter = document.getElementById('filterKategori')?.value || "ALL";
+
+      // Filter records
+      let filtered = certificationRecords.filter(r => {
+        const matchSearch = r.namaPelajar.toLowerCase().includes(searchVal) ||
+                            r.noMatrik.toLowerCase().includes(searchVal) ||
+                            r.namaKursus.toLowerCase().includes(searchVal) ||
+                            r.badanPengiktiraf.toLowerCase().includes(searchVal);
+
+        const matchStatus = (statusFilter === "ALL") || (r.statusPengesahan === statusFilter);
+        const matchKategori = (kategoriFilter === "ALL") || (r.kategori === kategoriFilter);
+
+        return matchSearch && matchStatus && matchKategori;
+      });
+
+      // Update counters
+      const pendingCount = certificationRecords.filter(r => r.statusPengesahan === 'Belum Disahkan').length;
+      const verifiedCount = certificationRecords.filter(r => r.statusPengesahan === 'Telah Disahkan').length;
+      const rejectedCount = certificationRecords.filter(r => r.statusPengesahan === 'Ditolak').length;
+
+      document.getElementById('coordCountPending').textContent = pendingCount;
+      document.getElementById('coordCountVerified').textContent = verifiedCount;
+      document.getElementById('coordCountRejected').textContent = rejectedCount;
+      document.getElementById('pendingBadgeCount').textContent = pendingCount;
+      document.getElementById('coordTableShowingCount').textContent = `Menunjukkan ${filtered.length} daripada ${certificationRecords.length} rekod pensijilan`;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="p-8 text-center text-slate-400">
+              <svg class="w-10 h-10 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              Tiada rekod ditemui berdasarkan kriteria carian/tapisan semasa.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(r => `
+        <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+          
+          <!-- Matrik & Pelajar -->
+          <td class="p-3.5">
+            <div class="flex items-center gap-2.5">
+              <div class="w-7 h-7 rounded-lg bg-blue-100 text-uthm-navy flex items-center justify-center font-bold text-xs">
+                ${r.namaPelajar.charAt(0)}
+              </div>
+              <div>
+                <p class="font-bold text-slate-800 text-xs">${escapeHtml(r.namaPelajar)}</p>
+                <div class="flex items-center gap-1.5 mt-0.5">
+                  <span class="font-mono text-[11px] font-bold text-blue-700 bg-blue-50 px-1 rounded">${r.noMatrik}</span>
+                  <span class="text-[10px] text-slate-400">• ${r.fakulti}</span>
+                </div>
+              </div>
+            </div>
+          </td>
+
+          <!-- Kursus & Kategori -->
+          <td class="p-3.5">
+            <p class="font-bold text-slate-800 text-xs">${escapeHtml(r.namaKursus)}</p>
+            <div class="flex items-center gap-1 mt-1">
+              <span class="px-1.5 py-0.2 rounded text-[10px] font-bold ${r.kategori === 'Profesional' ? 'bg-indigo-100 text-indigo-800 border border-indigo-200' : 'bg-teal-100 text-teal-800 border border-teal-200'}">
+                ${r.kategori}
+              </span>
+              <span class="text-[10px] text-slate-400">Mod: ${r.modPelaksanaan}</span>
+            </div>
+          </td>
+
+          <!-- Badan Pengiktiraf -->
+          <td class="p-3.5">
+            <span class="font-semibold text-slate-700 text-xs">${escapeHtml(r.badanPengiktiraf)}</span>
+            <div class="text-[10px] text-slate-400 mt-0.5">Gred: <span class="font-bold text-slate-600">${escapeHtml(r.keputusan)}</span></div>
+          </td>
+
+          <!-- Status Kursus -->
+          <td class="p-3.5">
+            ${getStatusSemasaBadge(r.statusSemasa)}
+          </td>
+
+          <!-- Kewangan -->
+          <td class="p-3.5">
+            <div class="font-bold text-slate-800 text-xs">RM ${r.kosSebenar.toFixed(2)}</div>
+            ${r.lebihanDitanggung > 0 ? `<div class="text-[10px] text-amber-700 font-semibold">Lebihan: RM ${r.lebihanDitanggung.toFixed(2)}</div>` : `<div class="text-[10px] text-emerald-700 font-semibold">100% Subsidi UTHM</div>`}
+          </td>
+
+          <!-- Bukti Dokumen -->
+          <td class="p-3.5 text-center">
+            <button 
+              type="button" 
+              onclick="openDocumentModal(${r.id})" 
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-uthm-navy text-xs font-bold transition border border-blue-200 group"
+              title="Lihat fail sijil yang dimuat naik"
+            >
+              <svg class="w-4 h-4 text-blue-700 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              <span>Bukti</span>
+            </button>
+          </td>
+
+          <!-- Status Pengesahan -->
+          <td class="p-3.5">
+            ${getStatusPengesahanBadge(r.statusPengesahan)}
+            ${r.statusPengesahan !== 'Belum Disahkan' ? `
+              <div class="text-[10px] text-slate-400 mt-1 font-mono">
+                Oleh: ${r.disahkanOleh} <br> ${r.tarikhDisahkan}
+              </div>
+            ` : ''}
+          </td>
+
+          <!-- Tindakan (Actions: Sahkan / Tolak) -->
+          <td class="p-3.5 text-right whitespace-nowrap">
+            <div class="flex items-center justify-end gap-1.5">
+              
+              <!-- Sahkan Button -->
+              <button 
+                type="button" 
+                onclick="verifyRecord(${r.id})" 
+                class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-bold transition flex items-center gap-1 shadow-sm hover:shadow"
+                title="Sahkan permohonan ini"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span>Sahkan</span>
+              </button>
+
+              <!-- Tolak Button -->
+              <button 
+                type="button" 
+                onclick="promptRejectRecord(${r.id})" 
+                class="px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 active:scale-95 text-xs font-bold transition flex items-center gap-1"
+                title="Tolak permohonan ini"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                <span>Tolak</span>
+              </button>
+
+            </div>
+          </td>
+
+        </tr>
+      `).join('');
+    }
+
+    function filterCoordinatorTable() {
+      renderCoordinatorTable();
+    }
+
+    function resetCoordinatorFilters() {
+      document.getElementById('tableSearchInput').value = "";
+      document.getElementById('filterStatusPengesahan').value = "ALL";
+      document.getElementById('filterKategori').value = "ALL";
+      renderCoordinatorTable();
+    }
+
+    function verifyRecord(recordId) {
+      const rec = certificationRecords.find(r => r.id === recordId);
+      if (!rec) return;
+
+      const now = new Date();
+      const timestamp = now.toISOString().replace('T', ' ').substring(0, 19);
+
+      rec.statusPengesahan = "Telah Disahkan";
+      rec.disahkanOleh = "STAF_FSKTM_042";
+      rec.tarikhDisahkan = timestamp;
+
+      renderAllViews();
+      showToast("Permohonan Disahkan", `Pensijilan ${rec.namaKursus} milik ${rec.namaPelajar} telah berjaya disahkan.`, "success");
+    }
+
+    function promptRejectRecord(recordId) {
+      const rec = certificationRecords.find(r => r.id === recordId);
+      if (!rec) return;
+
+      pendingRejectRecordId = recordId;
+      document.getElementById('rejectRecordName').textContent = `Kursus: ${rec.namaKursus} (${rec.namaPelajar} - ${rec.noMatrik})`;
+      document.getElementById('rejectReasonPreset').value = "Dokumen bukti sijil tidak jelas / sukar dibaca.";
+      document.getElementById('rejectReasonText').value = "Dokumen bukti sijil tidak jelas / sukar dibaca.";
+      document.getElementById('rejectModal').classList.remove('hidden');
+    }
+
+    function applyRejectPreset(value) {
+      if (value.startsWith("Lain-lain")) {
+        document.getElementById('rejectReasonText').value = "";
+        document.getElementById('rejectReasonText').focus();
+      } else {
+        document.getElementById('rejectReasonText').value = value;
+      }
+    }
+
+    function closeRejectModal() {
+      document.getElementById('rejectModal').classList.add('hidden');
+      pendingRejectRecordId = null;
+    }
+
+    function confirmRejectAction() {
+      if (!pendingRejectRecordId) return;
+
+      const rec = certificationRecords.find(r => r.id === pendingRejectRecordId);
+      if (!rec) return;
+
+      const reason = document.getElementById('rejectReasonText').value.trim() || "Ditolak oleh Penyelaras Fakulti";
+      const now = new Date();
+      const timestamp = now.toISOString().replace('T', ' ').substring(0, 19);
+
+      rec.statusPengesahan = "Ditolak";
+      rec.disahkanOleh = "STAF_FSKTM_042";
+      rec.tarikhDisahkan = timestamp;
+      rec.catatanPenolakan = reason;
+
+      closeRejectModal();
+      renderAllViews();
+      showToast("Permohonan Ditolak", `Pensijilan ${rec.namaKursus} telah ditolak dengan catatan pengesahan.`, "error");
+    }
+
+    // ==========================================
+    // DUMMY DATA: BILANGAN PELAJAR MENGIKUT FAKULTI (UTHM)
+    // ==========================================
+    const facultyEnrollmentData = [
+      {
+        code: 'FSKTM',
+        name: 'Fakulti Sains Komputer & Teknologi Maklumat',
+        totalStudents: 1650,
+        registeredStudents: 1020,
+        certifiedStudents: 890,
+        subsidySpent: 445000.00,
+        popularCerts: 'CEH, AWS Solutions Architect, CCNA'
+      },
+      {
+        code: 'FTK',
+        name: 'Fakulti Teknologi Kejuruteraan',
+        totalStudents: 2400,
+        registeredStudents: 1420,
+        certifiedStudents: 1210,
+        subsidySpent: 605000.00,
+        popularCerts: 'TVET Specialist, NIOSH SHO, CNC'
+      },
+      {
+        code: 'FKEE',
+        name: 'Fakulti Kejuruteraan Elektrik & Elektronik',
+        totalStudents: 2100,
+        registeredStudents: 1180,
+        certifiedStudents: 1020,
+        subsidySpent: 510000.00,
+        popularCerts: 'ST PW4, PLC Automation, IoT'
+      },
+      {
+        code: 'FAST',
+        name: 'Fakulti Sains Gunaan & Teknologi',
+        totalStudents: 750,
+        registeredStudents: 390,
+        certifiedStudents: 340,
+        subsidySpent: 170000.00,
+        popularCerts: 'ISO 17025 Lab, Halal Executive'
+      },
+      {
+        code: 'FKM',
+        name: 'Fakulti Kejuruteraan Mekanikal & Pembuatan',
+        totalStudents: 2250,
+        registeredStudents: 1150,
+        certifiedStudents: 990,
+        subsidySpent: 495000.00,
+        popularCerts: 'CSWP SolidWorks, CATIA, NDT'
+      },
+      {
+        code: 'FKAAB',
+        name: 'Fakulti Kejuruteraan Awam & Alam Bina',
+        totalStudents: 1950,
+        registeredStudents: 920,
+        certifiedStudents: 780,
+        subsidySpent: 390000.00,
+        popularCerts: 'Kad Hijau CIDB, Revit BIM'
+      },
+      {
+        code: 'FPTP',
+        name: 'Fakulti Pengurusan Teknologi & Perniagaan',
+        totalStudents: 1400,
+        registeredStudents: 610,
+        certifiedStudents: 490,
+        subsidySpent: 245000.00,
+        popularCerts: 'Lean Six Sigma, SAP ERP, PMP'
+      }
+    ];
+
+    // Reference to Faculty Comparison Bar Chart instance
+    let facultyChartInstance = null;
+
+    // ==========================================
+    // VIEW 3: PENGURUSAN (ANALYTIC & CHARTS)
+    // ==========================================
+    function updateManagementMetrics() {
+      // 1. Calculate Primary KPI: Peratusan Pelajar Mendapat Pensijilan
+      const totalUnivStudents = facultyEnrollmentData.reduce((acc, f) => acc + f.totalStudents, 0); // 12,500
+      const totalRegistered = facultyEnrollmentData.reduce((acc, f) => acc + f.registeredStudents, 0); // 6,690
+      const totalCertified = facultyEnrollmentData.reduce((acc, f) => acc + f.certifiedStudents, 0); // 5,720
+      const totalSubsidy = facultyEnrollmentData.reduce((acc, f) => acc + f.subsidySpent, 0); // 2,860,000
+
+      const overallCertifiedPct = ((totalCertified / totalUnivStudents) * 100).toFixed(1); // 45.8%
+      const targetPct = 40.0;
+      const pctDiff = (overallCertifiedPct - targetPct).toFixed(1);
+
+      // Update Primary Focal KPI Card
+      const primaryPctEl = document.getElementById('kpiPrimaryPercentage');
+      const primaryRatioEl = document.getElementById('kpiPrimaryRatio');
+      const primaryBarEl = document.getElementById('kpiPrimaryProgressBar');
+      const compTextEl = document.getElementById('kpiTargetComparisonText');
+      const statusBadgeEl = document.getElementById('kpiPrimaryStatusBadge');
+
+      if (primaryPctEl) primaryPctEl.textContent = `${overallCertifiedPct}%`;
+      if (primaryRatioEl) primaryRatioEl.textContent = `${totalCertified.toLocaleString()} / ${totalUnivStudents.toLocaleString()} Pelajar UTHM`;
+      if (primaryBarEl) primaryBarEl.style.width = `${Math.min(100, overallCertifiedPct)}%`;
+
+      if (compTextEl) {
+        if (parseFloat(pctDiff) >= 0) {
+          compTextEl.textContent = `+${pctDiff}% Melepasi Sasaran 40.0%`;
+          compTextEl.className = "text-emerald-300 font-bold bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30";
+        } else {
+          compTextEl.textContent = `${pctDiff}% Di Bawah Sasaran 40.0%`;
+          compTextEl.className = "text-amber-300 font-bold bg-amber-500/20 px-2 py-0.5 rounded border border-amber-400/30";
+        }
+      }
+
+      if (statusBadgeEl) {
+        if (parseFloat(overallCertifiedPct) >= targetPct) {
+          statusBadgeEl.innerHTML = `● Status: Melepasi Sasaran KPI (&ge;40%)`;
+          statusBadgeEl.className = "mt-2 text-[10px] bg-emerald-500/20 text-emerald-200 border border-emerald-400/30 px-2.5 py-0.5 rounded-full font-bold";
+        } else {
+          statusBadgeEl.innerHTML = `● Status: Perlu Ditingkatkan (&lt;40%)`;
+          statusBadgeEl.className = "mt-2 text-[10px] bg-amber-500/20 text-amber-200 border border-amber-400/30 px-2.5 py-0.5 rounded-full font-bold";
+        }
+      }
+
+      // Update Supporting KPI Cards
+      const totalStudentsEl = document.getElementById('kpiTotalStudentsAll');
+      const registeredEl = document.getElementById('kpiTotalRegisteredStudents');
+      const partRateEl = document.getElementById('kpiParticipationRate');
+      const subsidyEl = document.getElementById('kpiTotalSubsidyAmount');
+
+      if (totalStudentsEl) totalStudentsEl.textContent = totalUnivStudents.toLocaleString();
+      if (registeredEl) registeredEl.textContent = totalRegistered.toLocaleString();
+      if (partRateEl) {
+        const partPct = ((totalRegistered / totalUnivStudents) * 100).toFixed(1);
+        partRateEl.textContent = `${partPct}% Kadar Penyertaan Pelajar`;
+      }
+      if (subsidyEl) {
+        subsidyEl.textContent = `RM ${(totalSubsidy / 1000000).toFixed(2)} Juta`;
+      }
+
+      // Report Modal sync
+      const repTotalEl = document.getElementById('repTotalRecords');
+      const repCompEl = document.getElementById('repCompletedPct');
+      const repActualEl = document.getElementById('repActualCost');
+      const repSubsidyEl = document.getElementById('repSubsidyUsed');
+
+      if (repTotalEl) repTotalEl.textContent = `${totalCertified.toLocaleString()} Pelajar Berpensijilan`;
+      if (repCompEl) repCompEl.textContent = `${overallCertifiedPct}%`;
+      if (repActualEl) repActualEl.textContent = `RM ${(totalSubsidy * 1.85).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      if (repSubsidyEl) repSubsidyEl.textContent = `RM ${totalSubsidy.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+      renderManagementFacultyTable();
+    }
+
+    function renderManagementFacultyTable() {
+      const tbody = document.getElementById('managementFacultyTableBody');
+      if (!tbody) return;
+
+      const totalUnivStudents = facultyEnrollmentData.reduce((acc, f) => acc + f.totalStudents, 0);
+      const totalRegistered = facultyEnrollmentData.reduce((acc, f) => acc + f.registeredStudents, 0);
+      const totalCertified = facultyEnrollmentData.reduce((acc, f) => acc + f.certifiedStudents, 0);
+      const totalSubsidy = facultyEnrollmentData.reduce((acc, f) => acc + f.subsidySpent, 0);
+      const totalOverallPct = ((totalCertified / totalUnivStudents) * 100).toFixed(1);
+
+      // Render table rows
+      const rowsHtml = facultyEnrollmentData.map(f => {
+        const certPct = ((f.certifiedStudents / f.totalStudents) * 100).toFixed(1);
+        const regPct = ((f.registeredStudents / f.totalStudents) * 100).toFixed(1);
+
+        let statusBadge = "";
+        let barColor = "";
+
+        if (parseFloat(certPct) >= 45.0) {
+          statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>Melepasi Sasaran (&ge;40%)</span>`;
+          barColor = "bg-emerald-500";
+        } else if (parseFloat(certPct) >= 40.0) {
+          statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200"><span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>Mencapai Sasaran (40%)</span>`;
+          barColor = "bg-blue-600";
+        } else {
+          statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>Perlu Ditingkatkan (&lt;40%)</span>`;
+          barColor = "bg-amber-500";
+        }
+
+        return `
+          <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+            <td class="p-3.5">
+              <div class="font-extrabold text-slate-800 text-xs">${f.code}</div>
+              <div class="text-[11px] text-slate-500">${f.name}</div>
+              <div class="text-[10px] text-slate-400 mt-0.5 font-medium">Sijil Popular: ${f.popularCerts}</div>
+            </td>
+            <td class="p-3.5 text-center font-bold text-slate-800 text-xs">
+              ${f.totalStudents.toLocaleString()}
+            </td>
+            <td class="p-3.5 text-center text-xs">
+              <span class="font-semibold text-slate-700">${f.registeredStudents.toLocaleString()}</span>
+              <span class="text-[10px] text-slate-400 ml-1">(${regPct}%)</span>
+            </td>
+            <td class="p-3.5 text-center font-bold text-emerald-700 text-xs">
+              ${f.certifiedStudents.toLocaleString()}
+            </td>
+            <td class="p-3.5 text-center min-w-[170px]">
+              <div class="flex items-center justify-between text-xs mb-1 font-bold">
+                <span class="${parseFloat(certPct) >= 40 ? 'text-emerald-700' : 'text-amber-700'}">${certPct}%</span>
+                <span class="text-[10px] text-slate-400 font-normal">Sasaran: 40%</span>
+              </div>
+              <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                <div class="${barColor} h-2 rounded-full" style="width: ${Math.min(100, certPct)}%"></div>
+              </div>
+            </td>
+            <td class="p-3.5 text-center">
+              ${statusBadge}
+            </td>
+            <td class="p-3.5 text-right font-bold text-uthm-navy text-xs">
+              RM ${f.subsidySpent.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Add Total Row
+      const totalRowHtml = `
+        <tr class="bg-slate-100/90 font-black border-t-2 border-slate-300 text-slate-900 text-xs">
+          <td class="p-3.5 uppercase tracking-wider">
+            JUMLAH KESELURUHAN UNIVERSITI (UTHM)
+          </td>
+          <td class="p-3.5 text-center text-sm">
+            ${totalUnivStudents.toLocaleString()}
+          </td>
+          <td class="p-3.5 text-center text-sm">
+            ${totalRegistered.toLocaleString()} (${((totalRegistered / totalUnivStudents) * 100).toFixed(1)}%)
+          </td>
+          <td class="p-3.5 text-center text-sm text-emerald-800 font-black">
+            ${totalCertified.toLocaleString()}
+          </td>
+          <td class="p-3.5 text-center text-sm text-uthm-navy font-black">
+            ${totalOverallPct}%
+          </td>
+          <td class="p-3.5 text-center">
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-600 text-white shadow-sm">
+              MELEPASI SASARAN (40%)
+            </span>
+          </td>
+          <td class="p-3.5 text-right text-sm text-uthm-navy">
+            RM ${totalSubsidy.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </td>
+        </tr>
+      `;
+
+      tbody.innerHTML = rowsHtml + totalRowHtml;
+    }
+
+    function renderManagementCharts() {
+      // 1. Chart 1: Perbandingan Pencapaian Mengikut Fakulti (Bar Chart)
+      const facultyCtx = document.getElementById('facultyComparisonChart')?.getContext('2d');
+      if (facultyCtx) {
+        if (facultyChartInstance) {
+          facultyChartInstance.destroy();
+        }
+
+        const facultyCodes = facultyEnrollmentData.map(f => f.code);
+        const percentages = facultyEnrollmentData.map(f => parseFloat(((f.certifiedStudents / f.totalStudents) * 100).toFixed(1)));
+        
+        // Color bars: emerald if >= 40%, amber if < 40%
+        const barColors = percentages.map(pct => pct >= 40.0 ? '#059669' : '#D97706');
+
+        facultyChartInstance = new Chart(facultyCtx, {
+          type: 'bar',
+          data: {
+            labels: facultyCodes,
+            datasets: [
+              {
+                label: 'Peratusan Pelajar Mendapat Pensijilan (%)',
+                data: percentages,
+                backgroundColor: barColors,
+                borderRadius: 8,
+                barThickness: 32,
+                borderWidth: 1,
+                borderColor: '#ffffff'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: {
+                  font: { family: "'Plus Jakarta Sans', sans-serif", size: 11, weight: 'bold' },
+                  color: '#1E293B'
+                }
+              },
+              y: {
+                beginAtZero: true,
+                max: 70,
+                ticks: {
+                  stepSize: 10,
+                  callback: function(value) { return value + '%'; },
+                  font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 }
+                },
+                grid: { color: '#f1f5f9' }
+              }
+            },
+            plugins: {
+              legend: {
+                display: false
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const idx = context.dataIndex;
+                    const f = facultyEnrollmentData[idx];
+                    const val = context.raw;
+                    return [
+                      ` Pencapaian: ${val}% Pelajar Mendapat Sijil`,
+                      ` Bilangan: ${f.certifiedStudents.toLocaleString()} / ${f.totalStudents.toLocaleString()} Pelajar`,
+                      ` Status: ${val >= 40 ? 'Melepasi Sasaran' : 'Perlu Ditingkatkan'} (Sasaran 40%)`
+                    ];
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+
+      // 2. Chart 2: Taburan Status Semasa Pensijilan (Pie / Doughnut Chart)
+      const pieCtx = document.getElementById('statusPieChart')?.getContext('2d');
+      if (pieCtx) {
+        if (statusChartInstance) {
+          statusChartInstance.destroy();
+        }
+
+        // Aggregate current status distribution
+        const statusCounts = {
+          'Selesai': 5720,
+          'Sedang Berlangsung': 680,
+          'Mendaftar': 290,
+          'Batal / Tangguh': 120
+        };
+
+        const labels = Object.keys(statusCounts);
+        const dataValues = Object.values(statusCounts);
+        const total = dataValues.reduce((a, b) => a + b, 0);
+
+        statusChartInstance = new Chart(pieCtx, {
+          type: 'doughnut',
+          data: {
+            labels: labels,
+            datasets: [{
+              data: dataValues,
+              backgroundColor: [
+                '#10B981', // Selesai - Emerald
+                '#3B82F6', // Sedang Berlangsung - Blue
+                '#F59E0B', // Mendaftar - Amber
+                '#EF4444'  // Batal - Red
+              ],
+              borderWidth: 2,
+              borderColor: '#ffffff',
+              hoverOffset: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  boxWidth: 12,
+                  font: {
+                    family: "'Plus Jakarta Sans', sans-serif",
+                    size: 11
+                  },
+                  padding: 15
+                }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const label = context.label || '';
+                    const val = context.raw || 0;
+                    const pct = ((val / total) * 100).toFixed(1);
+                    return ` ${label}: ${val.toLocaleString()} Pelajar (${pct}%)`;
+                  }
+                }
+              }
+            },
+            cutout: '62%'
+          }
+        });
+      }
+    }
+
+    // ==========================================
+    // RE-RENDER ALL VIEWS TOGETHER
+    // ==========================================
+    function renderAllViews() {
+      renderStudentRecords();
+      renderCoordinatorTable();
+      updateManagementMetrics();
+
+      if (currentRole === 'pengurusan') {
+        renderManagementCharts();
+      }
+    }
+
+    // ==========================================
+    // DOCUMENT VIEWER MODAL
+    // ==========================================
+    function openDocumentModal(recordId) {
+      const rec = certificationRecords.find(r => r.id === recordId);
+      if (!rec) return;
+
+      document.getElementById('docModalCourseName').textContent = rec.namaKursus;
+      document.getElementById('docModalStudentName').textContent = rec.namaPelajar;
+      document.getElementById('docModalIssuer').textContent = rec.badanPengiktiraf;
+      document.getElementById('docModalMatrik').textContent = rec.noMatrik;
+      document.getElementById('docModalGrade').textContent = rec.keputusan;
+      document.getElementById('docModalDate').textContent = formatDate(rec.tarikhTamat);
+      document.getElementById('docModalSerial').textContent = `NO. SIRI: ${rec.noSiri !== '-' ? rec.noSiri : 'AUTH-SMP-' + rec.id}`;
+      document.getElementById('docModalPath').textContent = `/repositori/smp/bukti/${rec.buktiDokumen}`;
+
+      document.getElementById('documentModal').classList.remove('hidden');
+    }
+
+    function closeDocumentModal() {
+      document.getElementById('documentModal').classList.add('hidden');
+    }
+
+    function simulateDownloadDoc() {
+      showToast("Memuat Turun Fail", "Fail bukti dokumen pensijilan sedang dimuat turun ke peranti anda...", "info");
+      setTimeout(() => {
+        closeDocumentModal();
+      }, 800);
+    }
+
+    // ==========================================
+    // REPORT MODAL
+    // ==========================================
+    function openReportModal() {
+      document.getElementById('reportModal').classList.remove('hidden');
+    }
+
+    function closeReportModal() {
+      document.getElementById('reportModal').classList.add('hidden');
+    }
+
+    // ==========================================
+    // TOAST NOTIFICATION UTILITY
+    // ==========================================
+    let toastTimeout;
+    function showToast(title, message, type = 'success') {
+      const toast = document.getElementById('toastNotification');
+      const toastTitle = document.getElementById('toastTitle');
+      const toastMsg = document.getElementById('toastMessage');
+      const iconContainer = document.getElementById('toastIconContainer');
+
+      toastTitle.textContent = title;
+      toastMsg.textContent = message;
+
+      if (type === 'success') {
+        iconContainer.className = "p-2 rounded-xl bg-emerald-100 text-emerald-700 flex-shrink-0";
+        iconContainer.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+      } else if (type === 'error') {
+        iconContainer.className = "p-2 rounded-xl bg-rose-100 text-rose-700 flex-shrink-0";
+        iconContainer.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>`;
+      } else {
+        iconContainer.className = "p-2 rounded-xl bg-blue-100 text-uthm-navy flex-shrink-0";
+        iconContainer.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+      }
+
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-4', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+      }, 10);
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        hideToast();
+      }, 4000);
+    }
+
+    function hideToast() {
+      const toast = document.getElementById('toastNotification');
+      toast.classList.remove('translate-y-0', 'opacity-100');
+      toast.classList.add('translate-y-4', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 300);
+    }
+
+    // ==========================================
+    // UI BADGE HELPERS
+    // ==========================================
+    function getStatusSemasaBadge(status) {
+      switch (status) {
+        case 'Selesai':
+          return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>Selesai</span>`;
+        case 'Sedang Berlangsung':
+          return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200"><span class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>Sedang Berlangsung</span>`;
+        case 'Mendaftar':
+          return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>Mendaftar</span>`;
+        case 'Batal':
+          return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200"><span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span>Batal</span>`;
+        case 'Tangguh':
+          return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-200"><span class="w-1.5 h-1.5 rounded-full bg-purple-600"></span>Tangguh</span>`;
+        default:
+          return `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">${status}</span>`;
+      }
+    }
+
+    function getStatusPengesahanBadge(status) {
+      switch (status) {
+        case 'Telah Disahkan':
+          return `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-sm"><svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Telah Disahkan</span>`;
+        case 'Belum Disahkan':
+          return `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 shadow-sm"><svg class="w-3.5 h-3.5 text-amber-600 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>Belum Disahkan</span>`;
+        case 'Ditolak':
+          return `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300 shadow-sm"><svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>Ditolak</span>`;
+        default:
+          return `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">${status}</span>`;
+      }
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr || dateStr === '-') return '-';
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+      return dateStr;
+    }
+
+    function escapeHtml(string) {
+      if (!string) return '';
+      return String(string)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
